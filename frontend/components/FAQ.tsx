@@ -65,7 +65,7 @@ const faqData: FAQItemProps[] = [
     },
     {
       question: "How can I stay updated with Chrono's Gambit news and updates?",
-      answer: "You can stay updated by subscribing to our newsletter, following us on social media, or regularly checking our website for the latest news, updates, and upcoming features."
+      answer: "You can stay updated by regularly checking our website for the latest news, updates, and upcoming features."
     }
   ];
 
