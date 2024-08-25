@@ -5,7 +5,8 @@ import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
 import Footer from "@/components/Footer";
 import FAQ from '@/components/FAQ';       
-import Marketplace from "./components/marketplace";
+import Marketplace from "./components/Marketplace";
+
 
 function App() {
   const { connected } = useWallet();
@@ -17,7 +18,7 @@ function App() {
         <main className=" flex flex-col items-center px-4 py-8"> {/* Main content area */}
           <Routes>
             <Route path="/faq" element={<FAQ />} />
-            <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/marketplace" element={<Marketplace/>} />
             <Route
               path="/"
               element={
