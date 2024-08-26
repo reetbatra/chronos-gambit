@@ -1,11 +1,12 @@
 
+import BetCard from "./BetCard";
 
-const marketplace = () => {
+const Marketplace = () => {
   return (
     <div>
-      Makretplace
+     <BetCard/>
     </div>
   )
 }
 
-export default marketplace
+export default Marketplace
