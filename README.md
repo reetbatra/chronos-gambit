@@ -23,13 +23,13 @@ Chrono's Gambit is a cutting-edge decentralized prediction market platform built
 
 2. Install Dependencies
 
-`npm install`
+- `npm install`
 
 3. Start the Development Server
-`npm run dev`
+- `npm run dev`
 4. Deploy the Application
 
-`npm run deploy`
+- `npm run deploy`
 
 ## Note some important MOVE commands
 
