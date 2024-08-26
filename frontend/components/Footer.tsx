@@ -1,11 +1,12 @@
+import {Flex} from "@chakra-ui/react";
+
 const Footer = () => {
   return (
     
-    <div className="flex items-center justify-center p-auto max-w-screen-xl mx-auto my-auto w-full h-full flex-wrap my-2">
+    <Flex justifyContent={"center"} alignItems={"center"}>
       <p className= "display font-jbm text-xl">Enter at your own risk ⚠️ — BlockHeads at Aptos Winter School
-      </p>
-        
-    </div>
+      </p>        
+    </Flex>
   )
 }
 

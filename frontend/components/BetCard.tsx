@@ -1,19 +1,31 @@
+import {Stack} from '@chakra-ui/react';
 import { useState } from 'react';
 
-const BetCard = () => {
+type Props = {
+    id:string,
+    question: string;
+    firstOption: string;
+    secondOption: string;
+};
+const BetCard = (props:Props) => {
   const [showMore, setShowMore] = useState(false);
 
   const handleToggleMore = () => {
     setShowMore(!showMore);
   };
 
+    const handleBetClick = (value:string) => {
+      // handle the click event here
+      window.alert(`Bet ${value}`);
+    }
+
   return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-white p-4">
+    <Stack width={"300px"} height={"200px"} className="bg-white rounded-lg shadow-md p-4" key={props.id}>
       
-      <div className="font-bold text-lg mb-2">Will the next election be won by Party A?</div>
+      <div style={{fontWeight:"bold"}}>{props.question}</div>
 
       
-      <div className="text-gray-700 text-base">
+      {/* <div className="text-gray-700 text-base">
         {showMore ? (
           <>
             <p>
@@ -34,23 +46,23 @@ const BetCard = () => {
             </button>
           </>
         )}
-      </div>
+      </div> */}
 
       {/* Yes/No Buttons */}
-      <div className="mt-4 flex justify-between">
-        <button className="bg-green-500 text-white font-bold py-2 px-4 rounded hover:bg-green-600">
-          Yes
+      <div className="mt-20 px-4 flex justify-between">
+        <button onClick={()=>{handleBetClick(props.firstOption)}} style={{backgroundColor:"#008000"}} className="text-white font-bold py-2 px-4 rounded hover:bg-green-600">
+           Bet {props.firstOption}
         </button>
-        <button className="bg-red-500 text-white font-bold py-2 px-4 rounded hover:bg-red-600">
-          No
+        <button onClick={()=>handleBetClick(props.secondOption)} style={{backgroundColor:"#FF0000"}} className=" text-white font-bold py-2 px-4 rounded hover:bg-red-600">
+            Bet {props.secondOption}
         </button>
       </div>
 
       {/* Card Footer */}
-      <div className="mt-4 text-gray-500 text-sm">
+      {/* <div className="mt-4 text-gray-500 text-sm">
         Footer text with some additional information or disclaimers.
-      </div>
-    </div>
+      </div> */}
+    </Stack>
   );
 };
 
