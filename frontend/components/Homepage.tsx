@@ -20,7 +20,7 @@ function Homepage() {
   }, []);
   return (
     <>
-    <Center minHeight={"85vh"} className="font-jbm" bg={"#f5f5f5"} px={5}>
+    <Center minHeight={"90vh"} className="font-jbm" bg={"#f5f5f5"} px={5}>
             <Stack textAlign={"center"} pb={5} alignItems={"center"}>
                 <Heading py={10}>CHRONO's  GAMBIT</Heading>
                 <Box width="70%"className="font-jbm text-lg">

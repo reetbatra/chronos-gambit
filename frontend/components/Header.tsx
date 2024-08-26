@@ -13,10 +13,9 @@ export function Header() {
         <Link to="/"><h1 className="font-jbm text-xl">Chrono's Gambit</h1></Link>
       </div>
       <div style={{ display: 'flex', justifyContent:"flex-end", width:"70%"}}>
-        <Link to="/faq" className="font-jbm text-l" style={{marginRight:"40px"}}>FAQ's</Link>
         <Link to="/marketplace" className="font-jbm text-l" style={{marginRight:"40px"}}>Marketplace</Link>
-        <Link to={`/portfolio/${account?.address}`} className="font-jbm text-l" style={{marginRight:"10px"}}>Portfolio</Link>
-
+        <Link to={`/portfolio/${account?.address}`}  style={{marginRight:"40px"}} className="font-jbm text-l">Portfolio</Link>
+        <Link to="/faq" className="font-jbm text-l">FAQ's</Link>
       </div>
       <div className="ml-auto">
         <WalletSelector />

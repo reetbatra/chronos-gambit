@@ -1,4 +1,4 @@
-import {Stack} from '@chakra-ui/react';
+import {Avatar, Flex, Stack} from '@chakra-ui/react';
 import { useState } from 'react';
 
 type Props = {
@@ -20,9 +20,12 @@ const BetCard = (props:Props) => {
     }
 
   return (
-    <Stack width={"300px"} height={"200px"} className="bg-white rounded-lg shadow-md p-4" key={props.id}>
+    <Stack width={"300px"} height={"250px"} className="bg-white rounded-lg shadow-md p-4" key={props.id}>
       
-      <div style={{fontWeight:"bold"}}>{props.question}</div>
+      <Flex height={"80%"}>
+          <Avatar name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
+          <div style={{fontWeight:"bold", marginTop:"10px", marginLeft:"10px", fontSize:"17px", fontFamily:"sans-serif"}}>{props.question}</div>
+      </Flex>
 
       
       {/* <div className="text-gray-700 text-base">
@@ -49,7 +52,7 @@ const BetCard = (props:Props) => {
       </div> */}
 
       {/* Yes/No Buttons */}
-      <div className="mt-20 px-4 flex justify-between">
+      <div className=" px-4 pb-2 flex justify-between">
         <button onClick={()=>{handleBetClick(props.firstOption)}} style={{backgroundColor:"#008000"}} className="text-white font-bold py-2 px-4 rounded hover:bg-green-600">
            Bet {props.firstOption}
         </button>
@@ -59,9 +62,9 @@ const BetCard = (props:Props) => {
       </div>
 
       {/* Card Footer */}
-      {/* <div className="mt-4 text-gray-500 text-sm">
-        Footer text with some additional information or disclaimers.
-      </div> */}
+      <div className="flex mt-1 text-gray-500 text-sm justify-between">
+        Volume: $190mn  Total Investors: 20
+      </div>
     </Stack>
   );
 };

@@ -6,7 +6,7 @@ import {useEffect, useState} from "react";
 const bets= [
     {
         id:"1",
-        question: "Question 1",
+        question: "Will Chrono's Gambit win the hackathon? Along with Kana labs And some moreee",
         firstOption: "Yes",
         secondOption: "No",
     },
@@ -51,13 +51,14 @@ const Marketplace = () => {
 
 
   return (
-    <div>
+    <div style={{minHeight:"100vh"}}>
     <Grid
 		mt={5}
 		templateColumns={{
 			base: "repeat(2, 1fr)",
 			sm: "repeat(2, 1fr)",
-			md: "repeat(4, 1fr)",
+			md: "repeat(3, 1fr)",
+            lg: "repeat(3, 1fr)",
 		}}
 		gap={8}
 		alignItems={"center"}
