@@ -8,17 +8,17 @@ import FAQ from '@/components/FAQ';
 import Marketplace from "./components/Marketplace";
 import Homepage from "./components/Homepage";
 import {Flex} from "@chakra-ui/react";
+import Portfolio from "./components/Portfolio";
 
 
 
 function App() {
-  const { connected } = useWallet();
 
   return (
     <Router>
       <Header />
-      <div className="flex flex-col"> {/* Ensure the content stretches the full height */}
-        <main className=" flex flex-col items-center px-4 pt-8">  {/* Main content area */}
+      <div style={{backgroundColor:"#f5f5f5"}} className="flex flex-col"> {/* Ensure the content stretches the full height */}
+        <main style={{backgroundColor:"#f5f5f5"}} className=" flex flex-col items-center px-4 pt-8">  {/* Main content area */}
           <Routes>
             <Route path="/faq" element={<FAQ />} />
             <Route path="/marketplace" element={<Marketplace/>} />
@@ -28,6 +28,7 @@ function App() {
             <Homepage/>
               }
             />
+            <Route path="/portfolio/:address" element={<Portfolio/>} />
           </Routes>
         </main>
 				{/* <Footer /> */}
