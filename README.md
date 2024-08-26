@@ -32,3 +32,6 @@ Some commands are built-in the template and can be ran as a npm script, for exam
 
 For all other available CLI commands, can run `npx aptos` and see a list of all available commands.
 # chronos-gambit
+
+
+Sharayu's "Result": "Added 100000000 Octas to account 0x5a802e9512a0ceccc3f859e6eedfec01b283b7389698ffcd6bf7e3fdf4bf1b63"
