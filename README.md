@@ -18,8 +18,8 @@ Chrono's Gambit is a cutting-edge decentralized prediction market platform built
 
 ## Getting Started
 1. Clone the Repository
-`git clone https://github.com/your-repo/chronos-gambit.git`
-`cd chronos-gambit`
+- `git clone https://github.com/your-repo/chronos-gambit.git`
+- `cd chronos-gambit`
 
 2. Install Dependencies
 
