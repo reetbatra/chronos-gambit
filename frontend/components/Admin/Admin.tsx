@@ -1,5 +1,5 @@
 import {Box, Center} from '@chakra-ui/react'
-import AdminForm from './AdminForm'
+// import AdminForm from './AdminForm'
 import VoteTable from './VoteTable'
 
 type Props = {}
@@ -17,7 +17,7 @@ function Admin({}: Props) {
         <Center mt={10}>
                                 
     
-                    <AdminForm/>
+                    {/* <AdminForm/> */}
 
         </Center>
         <Box mt ={20} mx={10}>  
