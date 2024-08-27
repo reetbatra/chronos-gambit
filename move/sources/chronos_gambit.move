@@ -1,14 +1,15 @@
 module message_board_addr::chronos_gambit{
   use aptos_std::math64;
+  use aptos_framework::timestamp;
   use aptos_std::math128::{log2_64};
   use aptos_std::math_fixed64::{exp, mul_div};
-  use aptos_std::table::{Self, Table}; 
+  use aptos_std::table::{Self, Table};
   use aptos_std::fixed_point64::{FixedPoint64, create_from_rational, get_raw_value, add, sub};
   use aptos_framework::object::{Self, ExtendRef};
   use std::debug;
   use std::vector;
   use std::signer;
-  use std::timestamp; 
+  // use std::timestamp; 
   use std::option::{Self, Option};
   use message_board_addr::usdc;
 
@@ -67,13 +68,14 @@ module message_board_addr::chronos_gambit{
 
   // user shares
   struct UserData has key {
-    market_ids: vector<u64>,
-    market_to_shares: Table<u64, UserShares>
+    market_to_data: Table<u64, UserMarketData>,
   }
 
-  struct UserShares has store, copy, drop {
+  struct UserMarketData has store, copy, drop {
     option_shares_1: u64,
-    option_shares_2: u64
+    option_shares_2: u64,
+    amount_invested: u64,
+    profit_made: u64
   }
   
   // Init Fn
@@ -113,7 +115,7 @@ module message_board_addr::chronos_gambit{
     market_id: u64,
     option: u8,
     shares: u64,
-  ) acquires MarketCounter, PredictionMarketMetaData, LMSR {
+  ) acquires MarketCounter, PredictionMarketMetaData, LMSR, UserData {
     // Check option provided
     assert!(option < 2, ENOT_VALID_OPTION);
 
@@ -124,15 +126,15 @@ module message_board_addr::chronos_gambit{
     let market_address = get_market_address(market_id);
 
     // Get Price
-    let price = update_shares(market_id, option, shares);
+    let price = update_shares(user, market_id, option, shares);
     usdc::transfer(user, market_address, price);    
   }
 
   public entry fun init_market(
     admin: &signer, 
     question: vector<u8>, 
-    option1: vector<u8>, 
-    option2: vector<u8>, 
+    option_1: vector<u8>, 
+    option_2: vector<u8>, 
     liquidity_param: u64,
   ) acquires MarketCounter {
     let admin_address = signer::address_of(admin);
@@ -154,8 +156,8 @@ module message_board_addr::chronos_gambit{
     move_to(&object_signer, PredictionMarketMetaData{
       id: *counter,
       question: question,
-      option_1: option1,
-      option_2: option2,
+      option_1: option_1,
+      option_2: option_2,
       created_at: timestamp::now_seconds(),
       status: IN_PROGRESS,
       result: option::none<u8>()
@@ -193,7 +195,7 @@ module message_board_addr::chronos_gambit{
       borrow_global_mut<LMSR>(market_address)
   }
 
-  fun update_shares(market_id: u64, option: u8, shares: u64): u64 acquires MarketCounter, LMSR {
+  fun update_shares(user: &signer, market_id: u64, option: u8, shares: u64): u64 acquires MarketCounter, LMSR, UserData {
     // Get the current pricing
     let lmsr = get_lmsr_mut(market_id);
     let current_pricing = pricing_function((lmsr.option_shares_1 as u128), (lmsr.option_shares_2 as u128), (lmsr.liquidity_param as u128));
@@ -210,8 +212,38 @@ module message_board_addr::chronos_gambit{
 
     // Net price is the difference
     let net_diff = sub(new_pricing, current_pricing);
-    
-    round_to_6_decimals(net_diff)
+
+    let signer_address = signer::address_of(user);
+
+    // Update user's resource
+    if(!exists<UserData>(signer_address)) {
+      move_to(user, UserData {
+        market_to_data: table::new<u64, UserMarketData>(),
+      });
+    };
+
+    let user_data = borrow_global_mut<UserData>(signer_address);
+    let amount_invested = round_to_6_decimals(net_diff);
+
+    if (table::contains(&user_data.market_to_data, market_id)) {
+      let user_market_data = table::borrow_mut(&mut user_data.market_to_data, market_id);
+      if (option == 0) {
+        user_market_data.option_shares_1 = user_market_data.option_shares_1 + shares;
+      } else {
+        user_market_data.option_shares_2 = user_market_data.option_shares_2 + shares;
+      };
+      user_market_data.amount_invested = user_market_data.amount_invested + amount_invested;
+    } else {
+      let new_user_market_data = UserMarketData {
+        option_shares_1: if (option == 0) shares else 0,
+        option_shares_2: if (option == 0) 0 else shares,
+        amount_invested: amount_invested,
+        profit_made: 0,
+      };
+      table::add(&mut user_data.market_to_data, market_id, new_user_market_data);
+    };
+
+    amount_invested
   }
 
   fun pricing_function(q1: u128, q2: u128, b:u128): FixedPoint64{
@@ -247,41 +279,77 @@ module message_board_addr::chronos_gambit{
     lnx
   }
 
-  #[test]
-  fun test_ln() {
-    let tolerance = create_from_rational(1, 10000); // 0.0001 tolerance for equality checks
+  #[test(framework = @0x1, creator = @message_board_addr, user_1 = @0xBEEF, user_2 = @0xDEAD)]
+  fun setup_env(framework: &signer, creator: &signer){
+    // set up global time for testing purpose
+    timestamp::set_time_has_started_for_testing(framework); 
 
-    // let x = fixed_point64::create_from_rational(8123232322, 1000);
-    // let result = ln(x);
-    // debug::print<FixedPoint64>(&result);
+    init_module(creator);
+  }   
 
-    let x = pricing_function(10000, 10000, 250);
-    debug::print<FixedPoint64>(&x);
-    let y = round_to_6_decimals(x);
-    debug::print<u64>(&y);
+  #[test(framework = @0x1, creator = @message_board_addr, user_1 = @0xBEEF, user_2 = @0xDEAD)]
+  fun creating_new_market(framework: &signer, creator: &signer) acquires MarketCounter, LMSR, PredictionMarketMetaData {
+    setup_env(framework, creator);
+    
+    let question_1: vector<u8> = b"Who will win the US elections?";
+    let option_1_1: vector<u8> = b"Donald J Trump";
+    let option_2_1: vector<u8> = b"Kamala Harris";
+    let liquidity_param_1 = 250;
 
-    // let x = fixed_point64::create_from_rational(1, 1);
-    // let result = ln(x);
-    // debug::print<FixedPoint64>(&result);
-    // let expected = fixed_point64::create_from_rational(1, 100000);
-    // debug::print<FixedPoint64>(&expected);
-    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 0);
+    init_market(creator, question_1, option_1_1, option_2_1, liquidity_param_1);
 
-    // let e = fixed_point64::create_from_rational(271828, 100000);
-    // let result = ln(e);
-    // debug::print<FixedPoint64>(&result);
-    // let expected = fixed_point64::create_from_rational(1, 1);
-    // debug::print<FixedPoint64>(&expected);
-    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 1);
+    // Creator address
+    let creator_address = signer::address_of(creator);
 
-    // let x = fixed_point64::create_from_rational(2, 1);
-    // let result = ln(x);
-    // let expected = fixed_point64::create_from_rational(69314718, 100000000);
-    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 2);
+    // Check if counter is updated
+    let counter = borrow_global<MarketCounter>(creator_address);
+    assert!(counter.value == 1, 101);
 
-    // let x = fixed_point64::create_from_rational(10, 1);
-    // let result = ln(x);
-    // let expected = fixed_point64::create_from_rational(230258509, 100000000);
-    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 3);
+    // Get object address
+    let market_address = get_market_address(0);
+
+    // Check if LMSR object is created
+    let lmsr = borrow_global<LMSR>(market_address);
+    assert!(lmsr.option_shares_1 == 0, 102);
+    assert!(lmsr.option_shares_2== 0, 103);
+    assert!(lmsr.liquidity_param == liquidity_param_1, 104);
+
+    let prediction_metadata = borrow_global<PredictionMarketMetaData>(market_address);
+    assert!(prediction_metadata.id == 0, 105);
+    assert!(prediction_metadata.question == question_1, 106);
+    assert!(prediction_metadata.option_1 == option_1_1, 107);
+    assert!(prediction_metadata.option_2 == option_2_1, 108);
+    assert!(prediction_metadata.status == IN_PROGRESS, 109);
+    assert!(prediction_metadata.result == option::none<u8>(), 110);
+
+    //////////
+
+    let question_2: vector<u8> = b"Will Chelsea win PL 2024/25?";
+    let option_1_2: vector<u8> = b"Yes";
+    let option_2_2: vector<u8> = b"No";
+    let liquidity_param_2 = 200;
+
+    init_market(creator, question_2, option_1_2, option_2_2, liquidity_param_2);
+
+    // Check if counter is updated
+    let counter = borrow_global<MarketCounter>(creator_address);
+    assert!(counter.value == 2, 111);
+
+    // Get object address
+    let market_address = get_market_address(1);
+
+    // Check if LMSR object is created
+    let lmsr = borrow_global<LMSR>(market_address);
+    assert!(lmsr.option_shares_1 == 0, 112);
+    assert!(lmsr.option_shares_2== 0, 113);
+    assert!(lmsr.liquidity_param == liquidity_param_2, 114);
+
+    let prediction_metadata = borrow_global<PredictionMarketMetaData>(market_address);
+    assert!(prediction_metadata.id == 1, 115);
+    assert!(prediction_metadata.question == question_2, 116);
+    assert!(prediction_metadata.option_1 == option_1_2, 117);
+    assert!(prediction_metadata.option_2 == option_2_2, 118);
+    assert!(prediction_metadata.status == IN_PROGRESS, 119);
+    assert!(prediction_metadata.result == option::none<u8>(), 120);
   }
 }
