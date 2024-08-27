@@ -1,16 +1,12 @@
 module message_board_addr::chronos_gambit{
   use aptos_std::math64;
-  use aptos_std::math128;
-  use aptos_std::math_fixed64;
-  use aptos_std::fixed_point64::{Self, FixedPoint64};
-  use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, Metadata, FungibleAsset, FungibleStore};
-  use aptos_framework::object::{Self, Object, ExtendRef};
-  use aptos_framework::primary_fungible_store;
+  use aptos_std::math128::{log2_64};
+  use aptos_std::math_fixed64::{exp, mul_div};
+  use aptos_std::fixed_point64::{FixedPoint64, create_from_rational, get_raw_value, add, sub};
+  use aptos_framework::object::{Self, ExtendRef};
+  use std::debug;
   use std::vector;
-  use std::error;
-  use std::debug;    
   use std::signer;
-  use std::string::utf8;
   use std::timestamp; 
   use std::option::{Self, Option};
   use message_board_addr::usdc;
@@ -182,43 +178,50 @@ module message_board_addr::chronos_gambit{
   }
 
   fun pricing_function(q1: u128, q2: u128, b:u128): FixedPoint64{
-    let one = fixed_point64::create_from_rational(1, 1);
+    let b_fixed = create_from_rational(b, 1);
+    let q1_fixed = create_from_rational(q1, 1);
+    let q2_fixed = create_from_rational(q2, 1);
+    let one = create_from_rational(1, 1);
+  
+    let exp_1 = exp(mul_div(q1_fixed, one, b_fixed));
+    let exp_2 = exp(mul_div(q2_fixed, one, b_fixed));
 
-    let b_fixed = fixed_point64::create_from_rational(b, 1);
-    let q1_fixed = fixed_point64::create_from_rational(q1, 1);
-    let q2_fixed = fixed_point64::create_from_rational(q2, 1);
-
-    let exp_1 = math_fixed64::exp(math_fixed64::mul_div(q1_fixed, one, b_fixed));
-    let exp_2 = math_fixed64::exp(math_fixed64::mul_div(q2_fixed, one, b_fixed));
-
-    let sum = fixed_point64::add(exp_1, exp_2);
+    let sum = add(exp_1, exp_2);
     let ln_sum = ln(sum);
 
-    let result = math_fixed64::mul_div(b_fixed, ln_sum, one);
+    let result = mul_div(b_fixed, ln_sum, one);
     result
   }
 
+  fun round_to_6_decimals(x: FixedPoint64): u64{
+    let six_decimals = 1000000;
+    let scaled_part = (get_raw_value(x) * six_decimals) >> 64;
+    (scaled_part as u64)
+  }
+
   fun ln(x: FixedPoint64):FixedPoint64 {
-    let ln2 = fixed_point64::create_from_rational(693147, 1000000);
-    let one = fixed_point64::create_from_rational(1, 1);
-    let raw_value = fixed_point64::get_raw_value(x);
+    let ln2 = create_from_rational(693147, 1000000);
+    let one = create_from_rational(1, 1);
+    let raw_value = get_raw_value(x);
 
     // fixed_point64::create_from_raw_value(result);
-    let logx = fixed_point64::sub(math128::log2_64(raw_value), fixed_point64::create_from_rational(64, 1));
-    let lnx = math_fixed64::mul_div(logx, ln2, one);
+    let logx = sub(log2_64(raw_value), create_from_rational(64, 1));
+    let lnx = mul_div(logx, ln2, one);
     lnx
   }
 
   #[test]
   fun test_ln() {
-    let tolerance = fixed_point64::create_from_rational(1, 10000); // 0.0001 tolerance for equality checks
+    let tolerance = create_from_rational(1, 10000); // 0.0001 tolerance for equality checks
 
     // let x = fixed_point64::create_from_rational(8123232322, 1000);
     // let result = ln(x);
     // debug::print<FixedPoint64>(&result);
 
-    let x = pricing_function(100, 100, 10);
+    let x = pricing_function(10000, 10000, 250);
     debug::print<FixedPoint64>(&x);
+    let y = round_to_6_decimals(x);
+    debug::print<u64>(&y);
 
     // let x = fixed_point64::create_from_rational(1, 1);
     // let result = ln(x);
