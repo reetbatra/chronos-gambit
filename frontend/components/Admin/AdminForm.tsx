@@ -158,14 +158,9 @@ function AdminForm({}: Props) {
 			value={formData.liquidityParameter}
 			onChange={handleInputChange}
 		/>
-
-
-
 		    <Button type="submit">Submit</Button>
 
-			<Button ml={4} onClick={() =>{}}>
-				Close
-			</Button>
+			
         </form>
     </Center>
 
