@@ -1,17 +1,10 @@
-import { useWallet } from "@aptos-labs/wallet-adapter-react";
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-// Internal Components
-import { CardHeader, CardTitle } from "@/components/ui/card";
 import { Header } from "@/components/Header";
-import Footer from "@/components/Footer";
 import FAQ from '@/components/FAQ';       
 import Marketplace from "./components/Marketplace";
 import Homepage from "./components/Homepage";
-import {Flex} from "@chakra-ui/react";
 import Portfolio from "./components/Portfolio";
 import Admin from "./components/Admin/Admin";
-
-
 
 function App() {
 
