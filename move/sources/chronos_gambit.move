@@ -1,5 +1,8 @@
 module message_board_addr::chronos_gambit{
   use aptos_std::math64;
+  use aptos_std::math128;
+  use aptos_std::math_fixed64;
+  use aptos_std::fixed_point64::{Self, FixedPoint64};
   use aptos_framework::fungible_asset::{Self, MintRef, TransferRef, Metadata, FungibleAsset, FungibleStore};
   use aptos_framework::object::{Self, Object, ExtendRef};
   use aptos_framework::primary_fungible_store;
@@ -26,6 +29,9 @@ module message_board_addr::chronos_gambit{
   const ENOT_ADMIN: u64 = 0;
   const ENOT_INITIALIZED: u64 = 1;
   const ENOT_VALID_OPTION: u64 = 2;
+
+  // Share Decimals
+  const SHARE_DECIMALs: u8 = 4;
 
   // Structs
   #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
@@ -116,6 +122,7 @@ module message_board_addr::chronos_gambit{
     usdc::transfer(user, market_address, price);
 
     // ToDo: Increase and decrease the token amounts
+    
   }
 
   public entry fun init_market(
@@ -172,5 +179,69 @@ module message_board_addr::chronos_gambit{
     };
 
     bytes
+  }
+
+  fun pricing_function(q1: u128, q2: u128, b:u128): FixedPoint64{
+    let one = fixed_point64::create_from_rational(1, 1);
+
+    let b_fixed = fixed_point64::create_from_rational(b, 1);
+    let q1_fixed = fixed_point64::create_from_rational(q1, 1);
+    let q2_fixed = fixed_point64::create_from_rational(q2, 1);
+
+    let exp_1 = math_fixed64::exp(math_fixed64::mul_div(q1_fixed, one, b_fixed));
+    let exp_2 = math_fixed64::exp(math_fixed64::mul_div(q2_fixed, one, b_fixed));
+
+    let sum = fixed_point64::add(exp_1, exp_2);
+    let ln_sum = ln(sum);
+
+    let result = math_fixed64::mul_div(b_fixed, ln_sum, one);
+    result
+  }
+
+  fun ln(x: FixedPoint64):FixedPoint64 {
+    let ln2 = fixed_point64::create_from_rational(693147, 1000000);
+    let one = fixed_point64::create_from_rational(1, 1);
+    let raw_value = fixed_point64::get_raw_value(x);
+
+    // fixed_point64::create_from_raw_value(result);
+    let logx = fixed_point64::sub(math128::log2_64(raw_value), fixed_point64::create_from_rational(64, 1));
+    let lnx = math_fixed64::mul_div(logx, ln2, one);
+    lnx
+  }
+
+  #[test]
+  fun test_ln() {
+    let tolerance = fixed_point64::create_from_rational(1, 10000); // 0.0001 tolerance for equality checks
+
+    // let x = fixed_point64::create_from_rational(8123232322, 1000);
+    // let result = ln(x);
+    // debug::print<FixedPoint64>(&result);
+
+    let x = pricing_function(100, 100, 10);
+    debug::print<FixedPoint64>(&x);
+
+    // let x = fixed_point64::create_from_rational(1, 1);
+    // let result = ln(x);
+    // debug::print<FixedPoint64>(&result);
+    // let expected = fixed_point64::create_from_rational(1, 100000);
+    // debug::print<FixedPoint64>(&expected);
+    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 0);
+
+    // let e = fixed_point64::create_from_rational(271828, 100000);
+    // let result = ln(e);
+    // debug::print<FixedPoint64>(&result);
+    // let expected = fixed_point64::create_from_rational(1, 1);
+    // debug::print<FixedPoint64>(&expected);
+    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 1);
+
+    // let x = fixed_point64::create_from_rational(2, 1);
+    // let result = ln(x);
+    // let expected = fixed_point64::create_from_rational(69314718, 100000000);
+    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 2);
+
+    // let x = fixed_point64::create_from_rational(10, 1);
+    // let result = ln(x);
+    // let expected = fixed_point64::create_from_rational(230258509, 100000000);
+    // assert!(fixed_point64::almost_equal(result, expected, tolerance), 3);
   }
 }
