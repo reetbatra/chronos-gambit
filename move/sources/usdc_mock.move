@@ -52,6 +52,36 @@ module message_board_addr::usdc{
     });
   }
 
+  // init fn for test
+  #[test_only]
+  public entry fun initialize_for_test(admin: &signer) {
+    // Creates a non-deletable object with a named address based on our ASSET_SYMBOL
+    let constructor_ref = &object::create_named_object(admin, ASSET_SYMBOL);
+    // Create the FA's Metadata with your name, symbol, icon, etc.
+    primary_fungible_store::create_primary_store_enabled_fungible_asset(
+      constructor_ref,
+      option::none(),
+      utf8(ASSET_NAME), /* name */
+      utf8(ASSET_SYMBOL), /* symbol */
+      DECIMALS, /* decimals */
+      utf8(FAVICON), /* icon */
+      utf8(PROJECT), /* project */
+    );
+
+    let object_signer = object::generate_signer(constructor_ref);
+
+    // Generate the MintRef for this object
+    // Used by fungible_asset::mint() and fungible_asset::mint_to()
+    let mint_ref = fungible_asset::generate_mint_ref(constructor_ref);
+    let transfer_ref = fungible_asset::generate_transfer_ref(constructor_ref);
+
+    move_to(&object_signer, ObjectController {
+      mint_ref,
+      transfer_ref
+    });
+  }
+
+
   // View fns
   #[view]
   public fun get_metadata(): Object<Metadata> {
