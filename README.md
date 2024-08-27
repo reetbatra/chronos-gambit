@@ -46,3 +46,6 @@ For all other available CLI commands, can run `npx aptos` and see a list of all 
 
 Transaction submitted: https://explorer.aptoslabs.com/txn/0xaa0dbbf98c40f23873b5780e238ac5cd1ab8e810adaf74574a97c37844689aae?network=devnet
 Code was successfully deployed to object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957.
+
+
+Object Code=0x49da297f6e05d90ebd319e05d6a396acbb64e641f15b1741a4d2dc44b029f29b
