@@ -28,8 +28,11 @@ function Homepage() {
     <Heading py={10} style={{ fontFamily: "'JetBrains Mono'" }} >
       Chrono's Gambit
     </Heading>
-    <Box width="70%" className="font-jbm text-lg">
-      A decentralized prediction market platform on the Aptos blockchain. Make predictions more—securely and transparently, with low fees. Join us to harness collective intelligence and gain rewards for accurate predictions.
+    <Box width="70%" className="font-jbm text-2xl mb-2">
+    Predict the Future, Own the Outcome
+    </Box>
+    <Box width="70%" className="font-jbm text-l">
+    Secure, Transparent, and Low-Fee Prediction Market on Aptos – Where Collective Intelligence Meets Rewards
     </Box>
 
     <button
