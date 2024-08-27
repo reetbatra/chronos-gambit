@@ -7,13 +7,13 @@ type Props = {}
 function Portfolio({}: Props) {
   return (
     <>
-    <Stack minHeight={"100vh"} width={"100%"} px={10}>
+    <Stack minHeight={"100vh"} width={"100%"} px={10} color={"white"}>
         <Heading textAlign={"center"}>My Portfolio</Heading>
 
-                <Tabs variant='soft-rounded' colorScheme={"green"}>
+                <Tabs variant='unstyled'>
                   <TabList>
-                    <Tab>Activity</Tab>
-                    <Tab>Summary</Tab>
+                    <Tab _selected={{ color: 'black', bg: 'white' }}>Activity</Tab>
+                    <Tab  _selected={{ color: 'black', bg: 'white' }}>Summary</Tab>
                   </TabList>
                   <TabPanels>
                     <TabPanel>

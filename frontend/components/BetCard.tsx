@@ -20,7 +20,7 @@ const BetCard = (props:Props) => {
     }
 
   return (
-    <Stack width={"300px"} height={"250px"} className="bg-white rounded-lg shadow-md p-4" key={props.id}>
+    <Stack width={"300px"} height={"250px"} bg={"#18191C"} className="rounded-lg shadow-md p-4" key={props.id} color={"white"}>
       
       <Flex height={"80%"}>
           <Avatar name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
@@ -53,10 +53,10 @@ const BetCard = (props:Props) => {
 
       {/* Yes/No Buttons */}
       <div className=" px-4 pb-2 flex justify-between">
-        <button onClick={()=>{handleBetClick(props.firstOption)}} style={{backgroundColor:"#008000"}} className="text-white font-bold py-2 px-4 rounded hover:bg-green-600">
+        <button onClick={()=>{handleBetClick(props.firstOption)}} style={{borderColor:"#008000", borderWidth:"2px", height:"40px", borderRadius:"10px"}} className="text-white font-bold py-1 px-4 rounded hover:bg-green-600">
            Bet {props.firstOption}
         </button>
-        <button onClick={()=>handleBetClick(props.secondOption)} style={{backgroundColor:"#FF0000"}} className=" text-white font-bold py-2 px-4 rounded hover:bg-red-600">
+        <button onClick={()=>handleBetClick(props.secondOption)} style={{borderColor:"#FF0000", borderWidth:"2px", height:"40px", borderRadius:"10px"}} className=" text-white font-bold py-1 px-4 rounded hover:bg-red-600">
             Bet {props.secondOption}
         </button>
       </div>

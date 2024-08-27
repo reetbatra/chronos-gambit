@@ -1,6 +1,12 @@
 const plugin = require("tailwindcss/plugin");
 
 /** @type {import('tailwindcss').Config} */
+
+const {
+  default: flattenColorPalette,
+} = require("tailwindcss/lib/util/flattenColorPalette");
+const colors = require("tailwindcss/colors");
+
 module.exports = {
   darkMode: ["class"],
   content: ["./frontend/**/*.{ts,tsx}"],
@@ -55,19 +61,20 @@ module.exports = {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
+     animation: {
+        spotlight: "spotlight 2s ease .75s 1 forwards",
       },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
+      keyframes: {
+        spotlight: {
+          "0%": {
+            opacity: 0,
+            transform: "translate(-72%, -62%) scale(0.5)",
+          },
+          "100%": {
+            opacity: 1,
+            transform: "translate(-50%,-40%) scale(1)",
+          },
+        },
       },
         fontFamily: {
           jbm: ["JetBrains Mono", "sans-serif"],
@@ -103,9 +110,11 @@ module.exports = {
         72: "4.5rem",
         116: "7.25rem",
       },
+      
     },
   },
   plugins: [
+    addVariablesForColors,
     require("tailwindcss-animate"),
 
     plugin(function addTextStyles({ addComponents, theme }) {
@@ -180,4 +189,17 @@ module.exports = {
       });
     }),
   ],
+
+  
 };
+
+function addVariablesForColors({ addBase, theme }) {
+  let allColors = flattenColorPalette(theme("colors"));
+  let newVars = Object.fromEntries(
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+  );
+ 
+  addBase({
+    ":root": newVars,
+  });
+}

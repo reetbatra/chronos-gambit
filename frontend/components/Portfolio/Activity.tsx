@@ -25,16 +25,16 @@ const tradeData = [
 function Activity({}: Props) {
   return (
     <>
-    <TableContainer mt={10}>
+    <TableContainer color={"white"} mt={10}>
       <Table variant='simple'>
         <TableCaption>Your Activity on Chrono's Gambit</TableCaption>
         <Thead>
-          <Tr>
-            <Th>Activity</Th>
-            <Th>Question</Th>
-            <Th>Share type</Th>
-            <Th>Total Shares</Th>
-            <Th>Total Price</Th>
+          <Tr color={"white"}>
+            <Th color={"white"}>Activity</Th>
+            <Th color={"white"}>Question</Th>
+            <Th color={"white"}>Share type</Th>
+            <Th color={"white"}>Total Shares</Th>
+            <Th color={"white"}>Total Price</Th>
           </Tr>
         </Thead>
         <Tbody>

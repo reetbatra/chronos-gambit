@@ -9,6 +9,7 @@ import Marketplace from "./components/Marketplace";
 import Homepage from "./components/Homepage";
 import {Flex} from "@chakra-ui/react";
 import Portfolio from "./components/Portfolio";
+import Admin from "./components/Admin/Admin";
 
 
 
@@ -17,8 +18,8 @@ function App() {
   return (
     <Router>
       <Header />
-      <div style={{backgroundColor:"#f5f5f5"}} className="flex flex-col"> {/* Ensure the content stretches the full height */}
-        <main style={{backgroundColor:"#f5f5f5"}} className=" flex flex-col items-center px-4 pt-8">  {/* Main content area */}
+      <div style={{backgroundColor:"#111214"}} className="flex flex-col"> {/* Ensure the content stretches the full height */}
+        <main style={{backgroundColor:"#111214"}} className=" flex flex-col items-center px-4 pt-8">  {/* Main content area */}
           <Routes>
             <Route path="/faq" element={<FAQ />} />
             <Route path="/marketplace" element={<Marketplace/>} />
@@ -29,6 +30,8 @@ function App() {
               }
             />
             <Route path="/portfolio/:address" element={<Portfolio/>} />
+            <Route path="/admin" element={<Admin/>} />
+
           </Routes>
         </main>
 				{/* <Footer /> */}
@@ -47,7 +50,7 @@ function App() {
                 //           Chrono's Gambit: A decentralized prediction market platform on the Aptos blockchain. Make predictions on politics and more—securely and transparently, with low fees. Join us to harness collective intelligence and gain rewards for accurate predictions.
                 //         </p>
                 //         <button 
-                //           className="mt-4 bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 font-jbm text-lg"
+                //           className="mt-4 bg-white text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 font-jbm text-lg"
                 //           onClick={() => window.location.href = '/marketplace'}
                 //         >
                 //           Get Started

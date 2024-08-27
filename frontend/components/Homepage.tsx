@@ -1,5 +1,7 @@
 import {Box, Center, Container, Heading, Stack} from "@chakra-ui/react"
 import {useEffect} from "react";
+import {Spotlight} from "./ui/Spotlight";
+import {BackgroundBeams} from "./ui/background-beams";
 function Homepage() {
 
     useEffect(() => {
@@ -20,7 +22,10 @@ function Homepage() {
   }, []);
   return (
     <>
-    <Center minHeight={"90vh"} className="font-jbm" bg={"#f5f5f5"} px={5}>
+    
+    <BackgroundBeams/>
+    <Center  zIndex={1} minHeight={"90vh"} className="font-jbm" px={5} color={"white"}>
+    {/* <Spotlight/> */}
             <Stack textAlign={"center"} pb={5} alignItems={"center"}>
                 <Heading py={10}>CHRONO's  GAMBIT</Heading>
                 <Box width="70%"className="font-jbm text-lg">
@@ -29,7 +34,7 @@ function Homepage() {
                 
                 <button 
                    style={{width:"200px"}}
-                  className="mt-4 bg-black text-white py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 font-jbm text-lg"
+                  className="mt-4 bg-white text-black py-2 px-4 rounded-md hover:bg-gray-800 transition duration-300 font-jbm text-lg"
                   onClick={() => window.location.href = '/marketplace'}
                 >
                   Get Started
@@ -37,7 +42,6 @@ function Homepage() {
             </Stack>
 
 <div>
-
     <script src="https://cdn.botpress.cloud/webchat/v2.1/inject.js"></script>
     <script src="https://mediafiles.botpress.cloud/43e0165b-15b6-4289-b3bf-0baa7a9a8029/webchat/v2.1/config.js"></script>
 </div>
