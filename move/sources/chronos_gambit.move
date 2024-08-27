@@ -2,6 +2,7 @@ module message_board_addr::chronos_gambit{
   use aptos_std::math64;
   use aptos_std::math128::{log2_64};
   use aptos_std::math_fixed64::{exp, mul_div};
+  use aptos_std::table::{Self, Table}; 
   use aptos_std::fixed_point64::{FixedPoint64, create_from_rational, get_raw_value, add, sub};
   use aptos_framework::object::{Self, ExtendRef};
   use std::debug;
@@ -51,19 +52,29 @@ module message_board_addr::chronos_gambit{
   struct PredictionMarketMetaData has key, copy, drop {
 		id: u64,
 		question: vector<u8>,
-		option1: vector<u8>,
-		option2: vector<u8>,
-    sharesPerOption: u64,
-    k: u64,
-		createdAt: u64,
+		option_1: vector<u8>,
+		option_2: vector<u8>,
+		created_at: u64,
 		status: u8,
 		result: Option<u8>
 	}
 
-  struct VAMM has key, copy, drop {
-		optionShares1: u64,
-    optionShares2: u64,
+  struct LMSR has key, copy, drop {
+		option_shares_1: u64,
+    option_shares_2: u64,
+    liquidity_param: u64,
 	}
+
+  // user shares
+  struct UserData has key {
+    market_ids: vector<u64>,
+    market_to_shares: Table<u64, UserShares>
+  }
+
+  struct UserShares has store, copy, drop {
+    option_shares_1: u64,
+    option_shares_2: u64
+  }
   
   // Init Fn
   fun init_module(admin: &signer) {
@@ -73,7 +84,7 @@ module message_board_addr::chronos_gambit{
 
   // View Fn
   #[view]
-  public fun get_market_metadata(market_id: u64): (PredictionMarketMetaData, VAMM) acquires MarketCounter, PredictionMarketMetaData, VAMM {
+  public fun get_market_metadata(market_id: u64): (PredictionMarketMetaData, LMSR) acquires MarketCounter, PredictionMarketMetaData, LMSR {
     // Get counter and check if the market with the market_id is initialized
     let market_count = get_market_count();
     assert!(market_count > market_id, ENOT_INITIALIZED);
@@ -81,7 +92,7 @@ module message_board_addr::chronos_gambit{
     let market_address = get_market_address(market_id);
 
     // Get the metadata
-    (*borrow_global<PredictionMarketMetaData>(market_address), *borrow_global<VAMM>(market_address))
+    (*borrow_global<PredictionMarketMetaData>(market_address), *borrow_global<LMSR>(market_address))
   }
 
   #[view]
@@ -102,23 +113,19 @@ module message_board_addr::chronos_gambit{
     market_id: u64,
     option: u8,
     shares: u64,
-  ) acquires MarketCounter, PredictionMarketMetaData, VAMM {
+  ) acquires MarketCounter, PredictionMarketMetaData, LMSR {
     // Check option provided
     assert!(option < 2, ENOT_VALID_OPTION);
 
     // Get market data
-    let (prediction_market_metadata, vAMM) = get_market_metadata(market_id);
+    let (prediction_market_metadata, lmsr) = get_market_metadata(market_id);
 
     // Get object
     let market_address = get_market_address(market_id);
 
     // Get Price
-    // Todo: edit this later
-    let price = 5 * math64::pow(10, 6);
-    usdc::transfer(user, market_address, price);
-
-    // ToDo: Increase and decrease the token amounts
-    
+    let price = update_shares(market_id, option, shares);
+    usdc::transfer(user, market_address, price);    
   }
 
   public entry fun init_market(
@@ -126,7 +133,7 @@ module message_board_addr::chronos_gambit{
     question: vector<u8>, 
     option1: vector<u8>, 
     option2: vector<u8>, 
-    sharesPerOption: u64,
+    liquidity_param: u64,
   ) acquires MarketCounter {
     let admin_address = signer::address_of(admin);
     assert!(admin_address == @message_board_addr, ENOT_ADMIN);
@@ -141,17 +148,15 @@ module message_board_addr::chronos_gambit{
     let object_signer = object::generate_signer(constructor_ref);
     let extend_ref = object::generate_extend_ref(constructor_ref);
 
-    // Move ExtendRef and VAMM struct to the object
+    // Move ExtendRef and LMSR struct to the object
     move_to(&object_signer, ObjectController { extend_ref });
-    move_to(&object_signer, VAMM {optionShares1: sharesPerOption, optionShares2: sharesPerOption});
+    move_to(&object_signer, LMSR {option_shares_1: 0, option_shares_2: 0, liquidity_param: liquidity_param});
     move_to(&object_signer, PredictionMarketMetaData{
       id: *counter,
       question: question,
-      option1: option1,
-      option2: option2,
-      sharesPerOption: sharesPerOption,
-      k: sharesPerOption*2,
-      createdAt: timestamp::now_seconds(),
+      option_1: option1,
+      option_2: option2,
+      created_at: timestamp::now_seconds(),
       status: IN_PROGRESS,
       result: option::none<u8>()
     });
@@ -175,6 +180,38 @@ module message_board_addr::chronos_gambit{
     };
 
     bytes
+  }
+
+  inline fun get_lmsr_mut(market_id: u64): &mut LMSR acquires LMSR, MarketCounter {
+     // Get counter and check if the market with the market_id is initialized
+      let market_count = get_market_count();
+      assert!(market_count > market_id, ENOT_INITIALIZED);
+
+      let market_address = get_market_address(market_id);
+
+      // Get the metadata
+      borrow_global_mut<LMSR>(market_address)
+  }
+
+  fun update_shares(market_id: u64, option: u8, shares: u64): u64 acquires MarketCounter, LMSR {
+    // Get the current pricing
+    let lmsr = get_lmsr_mut(market_id);
+    let current_pricing = pricing_function((lmsr.option_shares_1 as u128), (lmsr.option_shares_2 as u128), (lmsr.liquidity_param as u128));
+
+    // Update the shares
+    if(option == 0){
+      lmsr.option_shares_1 = lmsr.option_shares_1 + shares;
+    } else {
+      lmsr.option_shares_2 = lmsr.option_shares_2 + shares;
+    };
+
+    // Get the new pricing
+    let new_pricing = pricing_function((lmsr.option_shares_1 as u128), (lmsr.option_shares_2 as u128), (lmsr.liquidity_param as u128));
+
+    // Net price is the difference
+    let net_diff = sub(new_pricing, current_pricing);
+    
+    round_to_6_decimals(net_diff)
   }
 
   fun pricing_function(q1: u128, q2: u128, b:u128): FixedPoint64{
