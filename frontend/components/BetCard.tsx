@@ -53,14 +53,48 @@ const BetCard = (props:Props) => {
       </div> */}
 
       {/* Yes/No Buttons */}
-      <div className=" px-4 pb-2 flex justify-between font-jbm">
-        <button onClick={()=>{handleBetClick(props.firstOption)}} style={{borderColor:"#008000", borderWidth:"2px", height:"40px", borderRadius:"10px"}} className="text-white font-bold py-1 px-4 rounded hover:bg-green-600">
-           Bet {props.firstOption}
-        </button>
-        <button onClick={()=>handleBetClick(props.secondOption)} style={{borderColor:"#FF0000", borderWidth:"2px", height:"40px", borderRadius:"10px"}} className=" text-white font-bold py-1 px-4 rounded hover:bg-red-600">
-            Bet {props.secondOption}
-        </button>
-      </div>
+      <div className="px-4 pb-2 flex justify-between font-jbm">
+  <button
+    onClick={() => handleBetClick(props.firstOption)}
+    style={{
+      borderColor: "#008000",
+      borderWidth: "2px",
+      height: "auto", 
+      borderRadius: "10px",
+      padding: "5px 10px", 
+      minWidth: "80px",
+      maxWidth: "150px", 
+      wordBreak: "break-word", 
+      textAlign: "center",
+      fontSize: "12px", 
+    }}
+    className="text-white font-bold rounded hover:bg-green-600"
+  >
+    Bet {props.firstOption}
+  </button>
+  <button
+    onClick={() => handleBetClick(props.secondOption)}
+    style={{
+      borderColor: "#FF0000",
+      borderWidth: "2px",
+      height: "auto", 
+      borderRadius: "10px",
+      padding: "5px 10px", 
+      minWidth: "80px",
+      maxWidth: "150px", 
+      wordBreak: "break-word", 
+      textAlign: "center",
+      fontSize: "12px", 
+    }}
+    className="text-white font-bold rounded hover:bg-red-600"
+  >
+    Bet {props.secondOption}
+  </button>
+</div>
+
+
+
+
 
       {/* Card Footer */}
       <div className="flex mt-1 text-gray-500 text-sm justify-between font-jbm">

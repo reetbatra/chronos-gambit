@@ -5,31 +5,31 @@ import { useEffect} from "react";
 const bets = [
   {
     id: "1",
-    question: "Will Chrono's Gambit win the hackathon? Along with Kana labs And some moreee",
+    question: "Will Chrono's Gambit win the Aptos winter hackathon?",
     firstOption: "Yes",
     secondOption: "No",
   },
   {
     id: "2",
-    question: "Question 1",
-    firstOption: "Yes",
-    secondOption: "No",
+    question: "Who will win the US elections?",
+    firstOption: "Kamala Harris",
+    secondOption: "Donald Trump",
   },
   {
     id: "3",
-    question: "Question 1",
+    question: "Pavel Durov relased in August?",
     firstOption: "Yes",
     secondOption: "No",
   },
   {
     id: "4",
-    question: "Question 1",
+    question: "Will Israel invade Lebanon before September",
     firstOption: "Yes",
     secondOption: "No",
   },
   {
     id: "5",
-    question: "Question 1",
+    question: "Will Taylor Swift endorse Kamala Harris before elections?",
     firstOption: "Yes",
     secondOption: "No",
   },
