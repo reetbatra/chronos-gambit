@@ -21,7 +21,7 @@ const BetCard = (props:Props) => {
     }
 
   return (
-    <Stack width={"300px"} height={"250px"} bg={"#18191C"} className="rounded-lg shadow-md p-4 font-jbm" key={props.id} color={"white"}>
+    <Stack width={"350px"} height={"250px"} bg={"#18191C"} className="rounded-lg shadow-md p-4 font-jbm" key={props.id} color={"white"}>
       
       <Flex height={"80%"}>
           <Avatar name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />

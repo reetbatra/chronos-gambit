@@ -3,14 +3,14 @@ import React, {useState} from 'react'
 // @ts-ignore
 import { initMarket } from "../../../blockend/aptosService"; 
 
-import { AptosClient, Network } from "aptos";
-import { Account, AccountAddress, Aptos, AptosConfig, U64, MoveVector, TypeTagVector, HexInput} from "@aptos-labs/ts-sdk";
+import {  Network } from "aptos";
+import { Account, Aptos, AptosConfig, U64} from "@aptos-labs/ts-sdk";
 import {
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
 type Props = {}
 
-const client = new AptosClient("https://fullnode.devnet.aptoslabs.com");
+// const client = new AptosClient("https://fullnode.devnet.aptoslabs.com");
 
 function AdminForm({}: Props) {
 
@@ -51,7 +51,7 @@ function AdminForm({}: Props) {
             return;
         }
 
-        const txn = await aptos.transaction.build.simple({
+         await aptos.transaction.build.simple({
             sender: account.address ?? "",
             data: {
               function: `${moduleAddress}::chronos_gambit::init_market`,
@@ -158,7 +158,7 @@ function AdminForm({}: Props) {
 			value={formData.liquidityParameter}
 			onChange={handleInputChange}
 		/>
-		    <Button type="submit">Submit</Button>
+		    <Button type="submit" colorScheme='green'>Submit</Button>
 
 			
         </form>

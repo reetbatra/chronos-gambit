@@ -26,6 +26,7 @@ console.log(value)
   }
   return (
     <>
+
     <TableContainer mt={10} color={"white"}>
       <Table variant='simple'>
         {/* <TableCaption>Your Activity on Chrono's Gambit</TableCaption> */}
