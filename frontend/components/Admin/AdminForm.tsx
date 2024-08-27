@@ -97,14 +97,9 @@ function AdminForm({}: Props) {
 			onChange={handleInputChange}
 			required
 		/>
-
-
-
 		    <Button type="submit">Submit</Button>
 
-			<Button ml={4} onClick={() =>{}}>
-				Close
-			</Button>
+			
         </form>
     </Center>
 
