@@ -24,6 +24,8 @@ function App() {
             />
             <Route path="/portfolio/:address" element={<Portfolio/>} />
             <Route path="/admin" element={<Admin/>} />
+            <Route path="/market/:address" element={<Market/>} />
+
 
           </Routes>
         </main>

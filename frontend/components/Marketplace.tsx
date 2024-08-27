@@ -1,6 +1,7 @@
 import { Grid } from "@chakra-ui/react";
 import BetCard from "./BetCard";
 import { useEffect} from "react";
+import {Link} from "react-router-dom";
 
 const bets = [
   {
@@ -64,7 +65,7 @@ const Marketplace = () => {
       >
         {bets.map((bet) => (
             <div className="font-jbm">
-                <BetCard key={bet?.id} {...bet} />
+                <Link to={`/market/${bet.id}`}><BetCard key={bet?.id} {...bet} /></Link>
             </div>
         
         ))}
