@@ -1,13 +1,12 @@
 import {Center, Flex, Stack, Text} from '@chakra-ui/react'
-import React from 'react'
 
 type Props = {}
 
 function Summary({}: Props) {
   return (
     	<>
-
-			<Center width={"100%"}>
+<div style={{ fontFamily: "'JetBrains Mono'" }} >
+<Center width={"100%"}>
 				<Flex
 					mx={50}
 					mt={10}
@@ -22,13 +21,13 @@ function Summary({}: Props) {
 					<Stack width="50%">
 						<Stack justify={"flex-start"}>
 							<Text color={"brand.quinary"}>Current Amount</Text>
-							<Text fontSize={20} color={"brand.secondary"}>
+							<Text fontSize={20} color={"brand.secondary"} className='font-bold'>
 								$11000
 							</Text>
 						</Stack>
 						<Stack justify={"flex-start"}>
 							<Text color={"brand.quinary"}>Invested Amount</Text>
-							<Text fontSize={20} color={"brand.secondary"}>
+							<Text fontSize={20} color={"brand.secondary"} className='font-bold'>
 								$10000
 							</Text>
 						</Stack>
@@ -36,19 +35,21 @@ function Summary({}: Props) {
 					<Stack width={"50%"} textAlign={"right"}>
 						<Stack>
 							<Text color={"brand.quinary"}>Total Markets</Text>
-							<Text fontSize={20} color={"brand.secondary"}>
+							<Text fontSize={20} color={"brand.secondary"} className='font-bold'>
 								10
 							</Text>
 						</Stack>
 						<Stack>
 							<Text color={"brand.quinary"}>Total Returns</Text>
-							<Text fontSize={20} color={"brand.secondary"}>
+							<Text fontSize={20} color={"brand.secondary"} className='font-bold'>
 								$1000
 							</Text>
 						</Stack>
 					</Stack>
 				</Flex>
 			</Center>
+</div>
+			
 		</>
   )
 }

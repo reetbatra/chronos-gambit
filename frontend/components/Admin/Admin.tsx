@@ -1,4 +1,4 @@
-import {Box, Center, Flex} from '@chakra-ui/react'
+import {Box, Flex} from '@chakra-ui/react'
 import AdminForm from './AdminForm'
 import VoteTable from './VoteTable'
 

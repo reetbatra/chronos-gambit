@@ -5,7 +5,6 @@ import {
   Tr,
   Th,
   Td,
-  TableCaption,
   TableContainer,
   Button,
   Flex,
@@ -23,7 +22,7 @@ const tradeData = [
 function VoteTable({}: Props) {
   
   const handleVote= (value:boolean) =>{
-
+console.log(value)
   }
   return (
     <>

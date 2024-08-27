@@ -12,6 +12,7 @@ const BetCard = (props:Props) => {
 
   const handleToggleMore = () => {
     setShowMore(!showMore);
+    console.log(handleToggleMore)
   };
 
     const handleBetClick = (value:string) => {
@@ -20,11 +21,11 @@ const BetCard = (props:Props) => {
     }
 
   return (
-    <Stack width={"300px"} height={"250px"} bg={"#18191C"} className="rounded-lg shadow-md p-4" key={props.id} color={"white"}>
+    <Stack width={"300px"} height={"250px"} bg={"#18191C"} className="rounded-lg shadow-md p-4 font-jbm" key={props.id} color={"white"}>
       
       <Flex height={"80%"}>
           <Avatar name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
-          <div style={{fontWeight:"bold", marginTop:"10px", marginLeft:"10px", fontSize:"17px", fontFamily:"sans-serif"}}>{props.question}</div>
+          <div style={{fontWeight:"bold", marginTop:"10px", marginLeft:"10px", fontSize:"17px"}} className='font-jbm'>{props.question}</div>
       </Flex>
 
       
@@ -52,7 +53,7 @@ const BetCard = (props:Props) => {
       </div> */}
 
       {/* Yes/No Buttons */}
-      <div className=" px-4 pb-2 flex justify-between">
+      <div className=" px-4 pb-2 flex justify-between font-jbm">
         <button onClick={()=>{handleBetClick(props.firstOption)}} style={{borderColor:"#008000", borderWidth:"2px", height:"40px", borderRadius:"10px"}} className="text-white font-bold py-1 px-4 rounded hover:bg-green-600">
            Bet {props.firstOption}
         </button>
@@ -62,7 +63,7 @@ const BetCard = (props:Props) => {
       </div>
 
       {/* Card Footer */}
-      <div className="flex mt-1 text-gray-500 text-sm justify-between">
+      <div className="flex mt-1 text-gray-500 text-sm justify-between font-jbm">
         Volume: $190mn  Total Investors: 20
       </div>
     </Stack>

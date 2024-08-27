@@ -1,4 +1,4 @@
-import {Center, Flex, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react'
+import {Center, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react'
 import Summary from './Portfolio/Summary'
 import Activity from './Portfolio/Activity'
 
@@ -8,12 +8,12 @@ function Portfolio({}: Props) {
   return (
     <>
     <Stack minHeight={"100vh"} width={"100%"} px={10} color={"white"}>
-        <Heading textAlign={"center"}>My Portfolio</Heading>
+        <Heading textAlign={"center"} style={{ fontFamily: "'JetBrains Mono'" }}>My Portfolio</Heading>
 
                 <Tabs variant='unstyled'>
                   <TabList>
-                    <Tab _selected={{ color: 'black', bg: 'white' }}>Activity</Tab>
-                    <Tab  _selected={{ color: 'black', bg: 'white' }}>Summary</Tab>
+                    <Tab _selected={{ color: 'black', bg: 'white' }} style={{ fontFamily: "'JetBrains Mono'" }} className='rounded-md'>Activity</Tab>
+                    <Tab  _selected={{ color: 'black', bg: 'white' }} style={{ fontFamily: "'JetBrains Mono'" }} className='rounded-md'>Summary</Tab>
                   </TabList>
                   <TabPanels>
                     <TabPanel>
