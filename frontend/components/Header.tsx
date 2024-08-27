@@ -8,10 +8,10 @@ export function Header() {
 
   const { account} = useWallet();
 
-useEffect(() => {
-  const fund = aptos.getAccountInfo({ accountAddress: "0xbe78c3db211c44ff8ab479269bca429472b026751f983abfbb5b716ae12874cc"});
-  fund.then((result) => console.log("fund", result));
-}, []);
+// useEffect(() => {
+//   const fund = aptos.getAccountInfo({ accountAddress: "0xbe78c3db211c44ff8ab479269bca429472b026751f983abfbb5b716ae12874cc"});
+//   fund.then((result) => console.log("fund", result));
+// }, []);
 
   return (
     <div style={{ backgroundColor:"#111214", display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', color:"white"}}>

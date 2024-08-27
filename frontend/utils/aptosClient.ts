@@ -7,9 +7,9 @@ export const aptos = new Aptos(new AptosConfig({ network: NETWORK }));
 export function aptosClient() {
  
     
-const fund =  aptos.getAccountInfo({ accountAddress: "0xbe78c3db211c44ff8ab479269bca429472b026751f983abfbb5b716ae12874cc"});
+// const fund =  aptos.getAccountInfo({ accountAddress: "0xbe78c3db211c44ff8ab479269bca429472b026751f983abfbb5b716ae12874cc"});
 
-console.log("fund", fund)
+// console.log("fund", fund)
 
   return aptos;
 }
