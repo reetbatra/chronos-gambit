@@ -1,11 +1,18 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import { WalletSelector } from "./WalletSelector";
 import { Link } from 'react-router-dom';
+import {aptos} from '../utils/aptosClient';
+import {useEffect} from "react";
 
 export function Header() {
 
   const { account} = useWallet();
-  
+
+useEffect(() => {
+  const fund = aptos.getAccountInfo({ accountAddress: "0xbe78c3db211c44ff8ab479269bca429472b026751f983abfbb5b716ae12874cc"});
+  fund.then((result) => console.log("fund", result));
+}, []);
+
   return (
     <div style={{ backgroundColor:"#111214", display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', color:"white"}}>
       <div style={{ display: 'flex', alignItems: 'center' }}>

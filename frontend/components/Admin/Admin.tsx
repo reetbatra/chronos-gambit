@@ -10,12 +10,12 @@ function Admin({}: Props) {
     <Box minHeight={"100vh"} width={"100%"} pt={20} px={20}>
         {/* <h1>Admin</h1> */}
         {/* <p>Voting Functionality</p> */}
-        <Flex>
+        {/* <Flex> */}
         <AdminForm/>
         <Box mx={10}>        
             <VoteTable/>
         </Box>
-        </Flex>
+        {/* </Flex> */}
         
     </Box>
     </>
