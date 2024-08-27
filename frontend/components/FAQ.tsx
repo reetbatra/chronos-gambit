@@ -35,38 +35,38 @@ const faqData: FAQItemProps[] = [
       question: "How are outcomes of prediction markets resolved?",
       answer: "Outcomes are resolved automatically through smart contracts using trusted data oracles that provide real-world data. This ensures a fair and transparent outcome for every market on the platform."
     },
-    {
-      question: "Are there any fees for using Chrono's Gambit?",
-      answer: "We strive to keep fees as low as possible. While there are minimal transaction fees associated with placing predictions or creating markets, these are significantly lower than those on traditional centralized platforms, thanks to the Aptos blockchain."
-    },
-    {
-      question: "Is Chrono's Gambit safe to use?",
-      answer: "Yes, Chrono's Gambit is built on the secure Aptos blockchain and uses smart contracts to automate processes, reducing the risk of human error or manipulation. We also use trusted oracles to ensure accurate outcome resolution. However, as with any decentralized platform, it's important to understand the risks and use best practices to keep your assets secure."
-    },
-    {
-      question: "Can I withdraw my funds at any time?",
-      answer: "Yes, you can withdraw your funds at any time, provided they are not currently locked in an active prediction market. Withdrawals are processed through your connected wallet."
-    },
-    {
-      question: "What happens if a prediction market is unresolved?",
-      answer: "If a prediction market remains unresolved due to an issue with the data source or oracle, the funds will be returned to the participants. We strive to ensure all markets are resolved fairly and transparently."
-    },
-    {
-      question: "How can I provide feedback or report a problem?",
-      answer: "We welcome user feedback to improve our platform. You can provide feedback or report any problems through our contact page or directly via email at support@chronosgambit.com."
-    },
-    {
-      question: "Is Chrono's Gambit available in all countries?",
-      answer: "Chrono's Gambit is accessible globally, but users should ensure that participating in prediction markets is legal in their jurisdiction. Users are responsible for understanding the legal requirements in their region."
-    },
-    {
-      question: "Can I create my own prediction market?",
-      answer: "Coming soon!"
-    },
-    {
-      question: "How can I stay updated with Chrono's Gambit news and updates?",
-      answer: "You can stay updated by regularly checking our website for the latest news, updates, and upcoming features."
-    }
+    // {
+    //   question: "Are there any fees for using Chrono's Gambit?",
+    //   answer: "We strive to keep fees as low as possible. While there are minimal transaction fees associated with placing predictions or creating markets, these are significantly lower than those on traditional centralized platforms, thanks to the Aptos blockchain."
+    // },
+    // {
+    //   question: "Is Chrono's Gambit safe to use?",
+    //   answer: "Yes, Chrono's Gambit is built on the secure Aptos blockchain and uses smart contracts to automate processes, reducing the risk of human error or manipulation. We also use trusted oracles to ensure accurate outcome resolution. However, as with any decentralized platform, it's important to understand the risks and use best practices to keep your assets secure."
+    // },
+    // {
+    //   question: "Can I withdraw my funds at any time?",
+    //   answer: "Yes, you can withdraw your funds at any time, provided they are not currently locked in an active prediction market. Withdrawals are processed through your connected wallet."
+    // },
+    // {
+    //   question: "What happens if a prediction market is unresolved?",
+    //   answer: "If a prediction market remains unresolved due to an issue with the data source or oracle, the funds will be returned to the participants. We strive to ensure all markets are resolved fairly and transparently."
+    // },
+    // {
+    //   question: "How can I provide feedback or report a problem?",
+    //   answer: "We welcome user feedback to improve our platform. You can provide feedback or report any problems through our contact page or directly via email at support@chronosgambit.com."
+    // },
+    // {
+    //   question: "Is Chrono's Gambit available in all countries?",
+    //   answer: "Chrono's Gambit is accessible globally, but users should ensure that participating in prediction markets is legal in their jurisdiction. Users are responsible for understanding the legal requirements in their region."
+    // },
+    // {
+    //   question: "Can I create my own prediction market?",
+    //   answer: "Coming soon!"
+    // },
+    // {
+    //   question: "How can I stay updated with Chrono's Gambit news and updates?",
+    //   answer: "You can stay updated by regularly checking our website for the latest news, updates, and upcoming features."
+    // }
   ];
 
 const FAQ = () => {

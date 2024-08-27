@@ -1,4 +1,4 @@
-import {Center, Heading, Stack, Tab, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react'
+import {Center, Stack, Tab, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react'
 import Summary from './Portfolio/Summary'
 import Activity from './Portfolio/Activity'
 
