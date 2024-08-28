@@ -5,6 +5,7 @@ import Marketplace from "./components/Marketplace";
 import Homepage from "./components/Homepage";
 import Portfolio from "./components/Portfolio";
 import Admin from "./components/Admin/Admin";
+import Market from './components/Market/Market';
 
 function App() {
 
