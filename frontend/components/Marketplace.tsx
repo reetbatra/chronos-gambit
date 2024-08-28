@@ -54,11 +54,12 @@ const Marketplace = () => {
 
     const {account} = useWallet();
 
-  const moduleAddress = "0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957";
+  const moduleAddress = "0x9dae74c3df3e6bcf432d55b97ce26681eded52103d2a109163a1435912ce6271";
 
   useEffect(() => {
 
     const fetchBets = async () => {
+
         try {
 
         const payload: InputViewFunctionData = {

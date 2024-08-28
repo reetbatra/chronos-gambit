@@ -1,7 +1,7 @@
 import {Button, Center, Input} from '@chakra-ui/react'
 import React, {useState} from 'react'
 // @ts-ignore
-import { initMarket } from "../../../blockend/aptosService"; 
+import { initMarket , getMarketCount, getMarketMetadata} from "../../../blockend/aptosService"; 
 
 import {  Network } from "aptos";
 import { Account, Aptos, AptosConfig, U64} from "@aptos-labs/ts-sdk";
@@ -30,6 +30,16 @@ function AdminForm({}: Props) {
 
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
+        // const markets = getMarketCount().then((m:any) => {
+        //             console.log("markets: ",m);
+        //         })
+        
+        // getMarketMetadata(0).then((m:any) => {
+        //             console.log("marketMetadata: ",m);
+        //         })
+                
+
 		const { name, value } = event.target
 		setFormData((prevFormData) => ({
 			...prevFormData,
@@ -39,7 +49,7 @@ function AdminForm({}: Props) {
         console.log("acc: " , acc);
 	}
 
-    const moduleAddress = "0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957";
+    const moduleAddress = "0x9dae74c3df3e6bcf432d55b97ce26681eded52103d2a109163a1435912ce6271";
 
 
 
@@ -51,64 +61,64 @@ function AdminForm({}: Props) {
             return;
         }
 
-        //  await aptos.transaction.build.simple({
-        //     sender: account.address ?? "",
-        //     data: {
-        //       function: `${moduleAddress}::chronos_gambit::init_market`,
-        //       typeArguments: [],
-        //       functionArguments: [
-
-        //         formData.question, 
-        //         formData.firstShareOption, 
-        //         formData.secondShareOption, 
-        //         new U64(formData.liquidityParameter)
-        //        ],
-        //     },
-        // });
-
-
-        // // const value = await client.getAccountResources(moduleAddress);
-        // // console.log(value);
-
-  
-        // if(account){
-        //         const committedTxn = await signAndSubmitTransaction({  data: {
-        //          function: `${moduleAddress}::chronos_gambit::init_market`,
-        //          typeArguments: [],
-        //          functionArguments: [formData.question, formData.firstShareOption, formData.secondShareOption, formData.liquidityParameter],
-        //     }, });
-        //         await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
-        //         console.log(`Committed transaction: ${committedTxn.hash}`);
-        // }else{
-        //     console.log("Account not available");
-        // }
-
-        await aptos.transaction.build.simple({
+         await aptos.transaction.build.simple({
             sender: account.address ?? "",
             data: {
-              function: `${moduleAddress}::chronos_gambit::buy_shares`,
+              function: `${moduleAddress}::chronos_gambit::init_market`,
               typeArguments: [],
               functionArguments: [
 
-                new U64(0),
-                new U64(0),
-                new U64(10),
+                formData.question, 
+                formData.firstShareOption, 
+                formData.secondShareOption, 
+                new U64(formData.liquidityParameter)
                ],
             },
         });
 
-        
+
+        // const value = await client.getAccountResources(moduleAddress);
+        // console.log(value);
+
+  
         if(account){
                 const committedTxn = await signAndSubmitTransaction({  data: {
-                 function: `${moduleAddress}::chronos_gambit::buy_shares`,
+                 function: `${moduleAddress}::chronos_gambit::init_market`,
                  typeArguments: [],
-                 functionArguments:[ 0,0,10],
+                 functionArguments: [formData.question, formData.firstShareOption, formData.secondShareOption, formData.liquidityParameter],
             }, });
                 await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
                 console.log(`Committed transaction: ${committedTxn.hash}`);
         }else{
             console.log("Account not available");
         }
+
+        // await aptos.transaction.build.simple({
+        //     sender: account.address ?? "",
+        //     data: {
+        //       function: `${moduleAddress}::chronos_gambit::buy_shares`,
+        //       typeArguments: [],
+        //       functionArguments: [
+
+        //         new U64(0),
+        //         new U64(0),
+        //         new U64(10),
+        //        ],
+        //     },
+        // });
+
+        
+        // if(account){
+        //         const committedTxn = await signAndSubmitTransaction({  data: {
+        //          function: `${moduleAddress}::chronos_gambit::buy_shares`,
+        //          typeArguments: [],
+        //          functionArguments:[ 0,0,10],
+        //     }, });
+        //         await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+        //         console.log(`Committed transaction: ${committedTxn.hash}`);
+        // }else{
+        //     console.log("Account not available");
+        // }
 
     
     
