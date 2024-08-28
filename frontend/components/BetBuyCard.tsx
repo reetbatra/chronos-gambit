@@ -2,12 +2,11 @@ import {Divider, Flex, Progress, Stack, Text} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-// Mock data simulating BetCard data (replace this with actual data fetching logic)
+
 const bets = [
   {
     id: "1",
     question: "Will Chrono's Gambit win the Aptos winter hackathon?",
-    description:"Chrono's Gambit is a decentralized prediction market platform built on the Aptos blockchain. It allows users to create and participate in prediction markets across various categories such as politics, climate change, sports, and more, all with low transaction fees and complete transparency.",
     firstOption: "Yes",
     secondOption: "No",
   },
@@ -17,7 +16,30 @@ const bets = [
     firstOption: "Kamala Harris",
     secondOption: "Donald Trump",
   },
-  // Add more bet data as needed
+  {
+    id: "3",
+    question: "Beiber baby: Boy or Girl?",
+    firstOption: "Boy",
+    secondOption: "Girl",
+  },
+  {
+    id: "4",
+    question: "Pavel Durov relased in August?",
+    firstOption: "Yes",
+    secondOption: "No",
+  },
+  {
+    id: "5",
+    question: "Will Israel invade Lebanon before September",
+    firstOption: "Yes",
+    secondOption: "No",
+  },
+  {
+    id: "6",
+    question: "Will Taylor Swift endorse Kamala Harris before elections?",
+    firstOption: "Yes",
+    secondOption: "No",
+  },
 ];
 
 const BetBuyCard = () => {
@@ -70,12 +92,12 @@ const BetBuyCard = () => {
 
             <Stack>
                 <Flex>
-                    <Text mr={2}>{bet.firstOption} </Text>
+                    <Text mr={2}>{bet?.firstOption} </Text>
                     <Text> - 100 Shares</Text>
                 </Flex>
                     <Progress width={"50%"} colorScheme='green' size='sm' value={50} />
                 <Flex width={"100%"}>
-                    <Text mr={2}>{bet.secondOption}  {" "}</Text>
+                    <Text mr={2}>{bet?.secondOption}  {" "}</Text>
                     <Text> - 50 Shares</Text>
                 </Flex>
                  <Progress width={"50%"} colorScheme='red' size='sm' value={40} />

@@ -52,7 +52,7 @@ const bets = [
 
 const Marketplace = () => {
 
-    const {account, signAndSubmitTransaction} = useWallet();
+    const {account} = useWallet();
 
   const moduleAddress = "0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957";
 

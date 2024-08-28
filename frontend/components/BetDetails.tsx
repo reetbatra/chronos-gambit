@@ -1,14 +1,13 @@
-import { useParams } from 'react-router-dom';
+//import { useParams } from 'react-router-dom';
 import BetBuyCard from './BetBuyCard';
-import {Flex, Stack} from '@chakra-ui/react';
+import {Flex} from '@chakra-ui/react';
 
 const BetDetails = () => {
-  const { id } = useParams<{ id: string }>();
+  //const { id } = useParams<{ id: string }>();
 
   return (
     <>
-    <Flex p={5} width={"100%"} color={"white"} justifyContent={"space-between"}>
-        
+    <Flex p={5} width={"100%"} color={"white"} justifyContent={"space-between"}>      
           <BetBuyCard/>
     </Flex>
   </>

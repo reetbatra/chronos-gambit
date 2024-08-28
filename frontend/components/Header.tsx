@@ -1,8 +1,8 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import { WalletSelector } from "./WalletSelector";
 import { Link } from 'react-router-dom';
-import {aptos} from '../utils/aptosClient';
-import {useEffect} from "react";
+// import {aptos} from '../utils/aptosClient';
+// import {useEffect} from "react";
 
 export function Header() {
 
