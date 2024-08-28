@@ -30,9 +30,6 @@ const tradeData = [
         receivedData: "Yes"
     },
 
-
-
-
 ]
 
 function VoteTable({}: Props) {
