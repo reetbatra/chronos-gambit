@@ -2,6 +2,7 @@ module message_board_addr::usdc{
   use aptos_framework::fungible_asset::{Self, TransferRef, Metadata, MintRef};
   use aptos_framework::object::{Self, Object};
   use aptos_framework::primary_fungible_store;
+  #[test_only]
   use aptos_std::math64;
   use std::signer;
   use std::string::utf8;

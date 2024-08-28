@@ -1,15 +1,14 @@
 module message_board_addr::chronos_gambit{
-  use aptos_std::math64;
   use aptos_framework::timestamp;
   use aptos_std::math128::{log2_64};
   use aptos_std::math_fixed64::{exp, mul_div};
   use aptos_std::table::{Self, Table};
   use aptos_std::fixed_point64::{FixedPoint64, create_from_rational, get_raw_value, add, sub};
   use aptos_framework::object::{Self, ExtendRef};
+  #[test_only]
   use std::debug;
   use std::vector;
   use std::signer;
-  // use std::timestamp; 
   use std::option::{Self, Option};
   use message_board_addr::usdc;
 
@@ -131,7 +130,7 @@ module message_board_addr::chronos_gambit{
     assert!(option < 2, ENOT_VALID_OPTION);
 
     // Get market data
-    let (prediction_market_metadata, lmsr) = get_market_metadata(market_id);
+    let (prediction_market_metadata, _lmsr) = get_market_metadata(market_id);
     
     // Market should be in progress
     assert!(prediction_market_metadata.status == IN_PROGRESS, ENOT_IN_PROGRESS);
@@ -145,11 +144,11 @@ module message_board_addr::chronos_gambit{
   }
 
   public entry fun record_result(
-    admin: &signer,
+    _admin: &signer,
     market_id: u64,
     result: u8
   ) acquires PredictionMarketMetaData, MarketCounter, LMSR {
-    // Todo: auth
+    // -> Removed auth for demo
 
     // Check option provided
     assert!(result < 2, ENOT_VALID_OPTION);
@@ -222,8 +221,9 @@ module message_board_addr::chronos_gambit{
     option_2: vector<u8>, 
     liquidity_param: u64,
   ) acquires MarketCounter {
-    let admin_address = signer::address_of(admin);
-    assert!(admin_address == @message_board_addr, ENOT_ADMIN);
+    // -> Removed auth for demo 
+    // let admin_address = signer::address_of(admin);
+    // assert!(admin_address == @message_board_addr, ENOT_ADMIN);
 
     // Get the market counter
     let counter = &mut borrow_global_mut<MarketCounter>(@message_board_addr).value;
