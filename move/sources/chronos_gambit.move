@@ -10,6 +10,7 @@ module message_board_addr::chronos_gambit{
   use std::vector;
   use std::signer;
   use std::option::{Self, Option};
+  use std::event;
   use message_board_addr::usdc;
 
   // Constants
@@ -56,9 +57,16 @@ module message_board_addr::chronos_gambit{
 		value: u64,
 	}
 
+  // stores market to creator address
+  struct MarketToCreator has key {
+    market_to_creator: Table<u64, address>
+  }
+
   struct PredictionMarketMetaData has key, copy, drop {
 		id: u64,
 		question: vector<u8>,
+    image_url: vector<u8>,
+    description: vector<u8>,
 		option_1: vector<u8>,
 		option_2: vector<u8>,
 		created_at: u64,
@@ -84,16 +92,59 @@ module message_board_addr::chronos_gambit{
     amount_invested: u64,
     profit_made: u64
   }
+
+  #[event]
+  struct MarketCreated has drop, store {
+    creator: address,
+    object_address: address,
+    counter: u64
+  }
   
   // Init Fn
   fun init_module(admin: &signer) {
 		let counter = MarketCounter { value: 0 };
     move_to(admin, counter);
+    move_to(admin, MarketToCreator{
+      market_to_creator: table::new<u64, address>()
+    });
   }
 
   // View Fn
   #[view]
-  public fun get_market_metadata(market_id: u64): (PredictionMarketMetaData, LMSR) acquires MarketCounter, PredictionMarketMetaData, LMSR {
+  public fun get_user_market_data(user_address: address): vector<UserMarketData> acquires UserData, MarketCounter{
+    // Number of markets
+    let market_count = get_market_count();
+
+    // Get user data struct
+    if(!exists<UserData>(user_address)){
+      return vector::empty<UserMarketData>()
+    };
+
+    let user_data = borrow_global_mut<UserData>(user_address);
+
+    let result = vector::empty<UserMarketData>();
+    let iterator = 0;
+
+    while(iterator < market_count) {
+      if (table::contains(&user_data.market_to_data, iterator)) {
+        let user_market_data = table::borrow(&mut user_data.market_to_data, iterator);
+        vector::push_back(&mut result, *user_market_data);
+      } else {
+        vector::push_back(&mut result, UserMarketData{
+          option_shares_1: 0,
+          option_shares_2: 0,
+          amount_invested: 0,
+          profit_made: 0,
+        });
+      };
+      iterator = iterator + 1;
+    };
+
+    result
+  }
+
+  #[view]
+  public fun get_market_metadata(market_id: u64): (PredictionMarketMetaData, LMSR) acquires MarketCounter, PredictionMarketMetaData, LMSR, MarketToCreator {
     // Get counter and check if the market with the market_id is initialized
     let market_count = get_market_count();
     assert!(market_count > market_id, ENOT_INITIALIZED);
@@ -105,9 +156,11 @@ module message_board_addr::chronos_gambit{
   }
 
   #[view]
-  public fun get_market_address(market_id: u64): address {
+  public fun get_market_address(market_id: u64): address acquires MarketToCreator {
+    let market_to_creator = borrow_global<MarketToCreator>(@message_board_addr);
+    let creator = table::borrow(&market_to_creator.market_to_creator, market_id);
     // Create seed from market_id
-    object::create_object_address(&@message_board_addr, u64_to_vec_u8(market_id))
+    object::create_object_address(creator, u64_to_vec_u8(market_id))
   }
 
   #[view]
@@ -122,7 +175,7 @@ module message_board_addr::chronos_gambit{
     market_id: u64,
     option: u8,
     shares: u64,
-  ) acquires MarketCounter, PredictionMarketMetaData, LMSR, UserData {
+  ) acquires MarketCounter, PredictionMarketMetaData, LMSR, UserData, MarketToCreator {
     // Check shares provided
     assert!(shares != 0, EINVALID_NO_SHARES);
 
@@ -147,7 +200,7 @@ module message_board_addr::chronos_gambit{
     _admin: &signer,
     market_id: u64,
     result: u8
-  ) acquires PredictionMarketMetaData, MarketCounter, LMSR {
+  ) acquires PredictionMarketMetaData, MarketCounter, LMSR, MarketToCreator {
     // -> Removed auth for demo
 
     // Check option provided
@@ -174,7 +227,7 @@ module message_board_addr::chronos_gambit{
   public entry fun withdraw_payout(
     user: &signer,
     market_id: u64
-  ) acquires PredictionMarketMetaData, MarketCounter, LMSR, UserData, ObjectController {
+  ) acquires PredictionMarketMetaData, MarketCounter, LMSR, UserData, ObjectController, MarketToCreator {
     let signer_address = signer::address_of(user);
 
     // Get market metadata
@@ -215,21 +268,24 @@ module message_board_addr::chronos_gambit{
   }
 
   public entry fun init_market(
-    admin: &signer, 
-    question: vector<u8>, 
+    signer: &signer, 
+    question: vector<u8>,
+    image_url: vector<u8>,
+    description: vector<u8>, 
     option_1: vector<u8>, 
     option_2: vector<u8>, 
     liquidity_param: u64,
-  ) acquires MarketCounter {
+  ) acquires MarketCounter, MarketToCreator {
     // -> Removed auth for demo 
     // let admin_address = signer::address_of(admin);
     // assert!(admin_address == @message_board_addr, ENOT_ADMIN);
+    let signer_address = signer::address_of(signer);
 
     // Get the market counter
     let counter = &mut borrow_global_mut<MarketCounter>(@message_board_addr).value;
 
     // Creates a non-deletable object with counter as the seed
-    let constructor_ref = &object::create_named_object(admin, u64_to_vec_u8(*counter));
+    let constructor_ref = &object::create_named_object(signer, u64_to_vec_u8(*counter));
 
     // Create an extend ref for the object and move it to the object
     let object_signer = object::generate_signer(constructor_ref);
@@ -241,12 +297,24 @@ module message_board_addr::chronos_gambit{
     move_to(&object_signer, PredictionMarketMetaData{
       id: *counter,
       question: question,
+      image_url: image_url,
+      description: description,
       option_1: option_1,
       option_2: option_2,
       created_at: timestamp::now_seconds(),
       status: IN_PROGRESS,
       result: option::none<u8>(),
       payout_per_share: option::none<u64>(),
+    });
+    let market_to_creator = &mut borrow_global_mut<MarketToCreator>(@message_board_addr).market_to_creator;
+    table::add(market_to_creator, *counter, signer_address);
+
+    let object_address = object::address_from_constructor_ref(constructor_ref);
+
+    event::emit(MarketCreated {
+      creator: signer_address,
+      object_address: object_address,
+      counter: *counter
     });
 
     // Increment the counter
@@ -303,7 +371,7 @@ module message_board_addr::chronos_gambit{
       borrow_global_mut<PredictionMarketMetaData>(market_address)
   }
 
-  fun update_shares(user: &signer, market_id: u64, option: u8, shares: u64): u64 acquires MarketCounter, LMSR, UserData {
+  fun update_shares(user: &signer, market_id: u64, option: u8, shares: u64): u64 acquires MarketCounter, LMSR, UserData, MarketToCreator {
     // Get the current pricing
     let lmsr = get_lmsr_mut(market_id);
     let current_pricing = pricing_function((lmsr.option_shares_1 as u128), (lmsr.option_shares_2 as u128), (lmsr.liquidity_param as u128));
@@ -388,15 +456,17 @@ module message_board_addr::chronos_gambit{
   }
 
   #[test_only]
-  fun setup_market(creator: &signer, user_1: &signer, user_2: &signer) acquires MarketCounter{
+  fun setup_market(creator: &signer, user_1: &signer, user_2: &signer) acquires MarketCounter, MarketToCreator{
     usdc::initialize_for_test(creator);
 
     let question_1: vector<u8> = b"Who will win the US elections?";
+    let image_url: vector<u8> = b"https://tinyurl.com/rickroll1232421";
+    let description: vector<u8> = b"This market will resolve to `Yes` if Donald J. Trump wins the 2024 US Presidential Election";
     let option_1_1: vector<u8> = b"Donald J Trump";
     let option_2_1: vector<u8> = b"Kamala Harris";
     let liquidity_param_1 = 250;
 
-    init_market(creator, question_1, option_1_1, option_2_1, liquidity_param_1);
+    init_market(creator, question_1, image_url, description, option_1_1, option_2_1, liquidity_param_1);
 
     // Mint tokens for user accounts
     let amount = 10000000000;
@@ -413,15 +483,25 @@ module message_board_addr::chronos_gambit{
   }   
 
   #[test(framework = @0x1, creator = @message_board_addr, user_1 = @0xBEEF, user_2 = @0xDEAD)]
-  fun test_creating_new_market(framework: &signer, creator: &signer) acquires MarketCounter, LMSR, PredictionMarketMetaData {
+  fun test_creating_new_market(framework: &signer, creator: &signer, user_1: &signer) acquires MarketCounter, LMSR, PredictionMarketMetaData, MarketToCreator, UserData {
     setup_env(framework, creator);
     
     let question_1: vector<u8> = b"Who will win the US elections?";
+    let image_url_1: vector<u8> = b"https://tinyurl.com/rickroll1232421";
+    let description_1: vector<u8> = b"This market will resolve to `Yes` if Donald J. Trump wins the 2024 US Presidential Election.";
     let option_1_1: vector<u8> = b"Donald J Trump";
     let option_2_1: vector<u8> = b"Kamala Harris";
     let liquidity_param_1 = 250;
 
-    init_market(creator, question_1, option_1_1, option_2_1, liquidity_param_1);
+    // Before any markets
+    let user_market_data = get_user_market_data(signer::address_of(user_1));
+    assert!(vector::length(&user_market_data) == 0, 125);
+
+    init_market(creator, question_1, image_url_1, description_1, option_1_1, option_2_1, liquidity_param_1);
+
+    // After one market
+    let user_market_data = get_user_market_data(signer::address_of(user_1));
+    assert!(vector::length(&user_market_data) == 0, 126);
 
     // Creator address
     let creator_address = signer::address_of(creator);
@@ -446,15 +526,23 @@ module message_board_addr::chronos_gambit{
     assert!(prediction_metadata.option_2 == option_2_1, 108);
     assert!(prediction_metadata.status == IN_PROGRESS, 109);
     assert!(prediction_metadata.result == option::none<u8>(), 110);
+    assert!(prediction_metadata.image_url == image_url_1, 123);
+    assert!(prediction_metadata.description == description_1, 124);
 
     //////////
 
-    let question_2: vector<u8> = b"Will Chelsea win PL 2024/25?";
+    let question_2: vector<u8> = b"Will Osimhen join Chelsea in 24/25 season?";
+    let image_url_2: vector<u8> = b"https://tinyurl.com/osimhent12ochelsea";
+    let description_2: vector<u8> = b"This is a market on whether Victor Osimhen will sign for Chelsea F.C.";
     let option_1_2: vector<u8> = b"Yes";
     let option_2_2: vector<u8> = b"No";
     let liquidity_param_2 = 200;
 
-    init_market(creator, question_2, option_1_2, option_2_2, liquidity_param_2);
+    init_market(creator, question_2, image_url_2, description_2, option_1_2, option_2_2, liquidity_param_2);
+
+    // After two markets
+    let user_market_data = get_user_market_data(signer::address_of(user_1));
+    assert!(vector::length(&user_market_data) == 0, 126);
 
     // Check if counter is updated
     let counter = borrow_global<MarketCounter>(creator_address);
@@ -476,10 +564,12 @@ module message_board_addr::chronos_gambit{
     assert!(prediction_metadata.option_2 == option_2_2, 118);
     assert!(prediction_metadata.status == IN_PROGRESS, 119);
     assert!(prediction_metadata.result == option::none<u8>(), 120);
+    assert!(prediction_metadata.image_url == image_url_2, 121);
+    assert!(prediction_metadata.description == description_2, 122);
   }
 
   #[test(framework = @0x1, creator = @message_board_addr, user_1 = @0xBEEF, user_2 = @0xDEAD)]
-  fun test_buying_shares(framework: &signer, creator: &signer, user_1: &signer, user_2: &signer) acquires MarketCounter, LMSR, UserData, PredictionMarketMetaData, ObjectController {
+  fun test_buying_shares(framework: &signer, creator: &signer, user_1: &signer, user_2: &signer) acquires MarketCounter, LMSR, UserData, PredictionMarketMetaData, ObjectController, MarketToCreator {
     setup_env(framework, creator);
     setup_market(creator, user_1, user_2);
 
@@ -506,6 +596,15 @@ module message_board_addr::chronos_gambit{
 
     // check buying shares
     buy_shares(user_1, market_id, option_1, shares_1);
+
+    // After two markets
+    let user_market_data = get_user_market_data(user_address);
+    assert!(vector::length(&user_market_data) == 1, 280);
+    let first_data = vector::borrow(&user_market_data, 0);
+    assert!(first_data.option_shares_1 == 5, 281);
+    assert!(first_data.option_shares_2 == 0, 282);
+    assert!(first_data.amount_invested == amount_invested_1, 283);
+    assert!(first_data.profit_made == 0, 284);
 
     let lmsr = borrow_global<LMSR>(market_address);
     assert!(lmsr.option_shares_1 == 5, 204);
