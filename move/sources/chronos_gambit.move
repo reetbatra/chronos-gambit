@@ -171,11 +171,12 @@ module message_board_addr::chronos_gambit{
   public entry fun withdraw_payout(
     user: &signer,
     market_id: u64
-  ) acquires PredictionMarketMetaData, MarketCounter, LMSR, UserData {
+  ) acquires PredictionMarketMetaData, MarketCounter, LMSR, UserData, ObjectController {
     let signer_address = signer::address_of(user);
 
     // Get market metadata
     let (prediction_market_metadata, _) = get_market_metadata(market_id);
+    let market_address = get_market_address(market_id);
 
     // Market should be in finished state
     assert!(prediction_market_metadata.status == FINISHED, ENOT_FINISHED);
@@ -199,7 +200,12 @@ module message_board_addr::chronos_gambit{
     // User's payout
     let profit_made = winning_shares * (*option::borrow(&prediction_market_metadata.payout_per_share));
 
-    // Todo: make the payment
+    // Make the payment
+    let extend_ref = &borrow_global<ObjectController>(market_address).extend_ref;
+    let object_signer = object::generate_signer_for_extending(extend_ref);
+
+    // Perform transfer
+    usdc::transfer(&object_signer, signer_address, profit_made);    
 
     // Update user's data
     user_market_data.profit_made = profit_made;
@@ -469,7 +475,7 @@ module message_board_addr::chronos_gambit{
   }
 
   #[test(framework = @0x1, creator = @message_board_addr, user_1 = @0xBEEF, user_2 = @0xDEAD)]
-  fun test_buying_shares(framework: &signer, creator: &signer, user_1: &signer, user_2: &signer) acquires MarketCounter, LMSR, UserData, PredictionMarketMetaData {
+  fun test_buying_shares(framework: &signer, creator: &signer, user_1: &signer, user_2: &signer) acquires MarketCounter, LMSR, UserData, PredictionMarketMetaData, ObjectController {
     setup_env(framework, creator);
     setup_market(creator, user_1, user_2);
 
@@ -485,7 +491,6 @@ module message_board_addr::chronos_gambit{
     let user_address = signer::address_of(user_1);
 
     let user_balance_before = usdc::get_balance(user_address);
-    debug::print<u64>(&user_balance_before);
 
     let lmsr = borrow_global<LMSR>(market_address);
     assert!(lmsr.option_shares_1 == 0, 201);
@@ -522,8 +527,6 @@ module message_board_addr::chronos_gambit{
     let option_2 = 1;
 
     let user_balance_before = usdc::get_balance(user_address);
-    debug::print<vector<u8>>(&b"user 2 before balance:");
-    debug::print<u64>(&user_balance_before);
 
     let lmsr = borrow_global<LMSR>(market_address);
     assert!(lmsr.option_shares_1 == 5, 212);
@@ -532,7 +535,6 @@ module message_board_addr::chronos_gambit{
 
     let net_diff = sub(pricing_function(5, 10, 250), pricing_function(5, 0, 250));
     let amount_invested_2 = round_to_6_decimals(net_diff);
-    debug::print<u64>(&amount_invested_2);
 
     // check buying shares
     buy_shares(user_2, market_id, option_2, shares_2);
@@ -543,7 +545,6 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 218);
 
     let user_balance_after = usdc::get_balance(user_address);
-    debug::print<u64>(&user_balance_after);
 
     // Check user data
     let user_data = borrow_global<UserData>(signer::address_of(user_2));
@@ -562,7 +563,6 @@ module message_board_addr::chronos_gambit{
     let option_3 = 0;
 
     let user_balance_before = usdc::get_balance(user_address);
-    debug::print<u64>(&user_balance_before);
 
     let lmsr = borrow_global<LMSR>(market_address);
     assert!(lmsr.option_shares_1 == 5, 224);
@@ -571,7 +571,6 @@ module message_board_addr::chronos_gambit{
 
     let net_diff = sub(pricing_function(31, 10, 250), pricing_function(5, 10, 250));
     let amount_invested_3 = round_to_6_decimals(net_diff);
-    debug::print<u64>(&amount_invested_3);
 
     // check buying shares
     buy_shares(user_2, market_id, option_3, shares_3);
@@ -582,7 +581,6 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 229);
 
     let user_balance_after = usdc::get_balance(user_address);
-    debug::print<u64>(&user_balance_after);
 
     // Check user data
     let user_data = borrow_global<UserData>(signer::address_of(user_2));
@@ -590,9 +588,6 @@ module message_board_addr::chronos_gambit{
     assert!(user_market_data.option_shares_1 == 26, 230);
     assert!(user_market_data.option_shares_2 == 10, 231);
     assert!(user_market_data.profit_made == 0, 232);
-    debug::print<u64>(&user_market_data.amount_invested);
-    debug::print<u64>(&amount_invested_3);
-    debug::print<u64>(&amount_invested_2);
 
     // Balance check
     assert!(user_market_data.amount_invested == (amount_invested_3 + amount_invested_2), 235);
@@ -606,7 +601,6 @@ module message_board_addr::chronos_gambit{
     let option_4 = 1;
 
     let user_balance_before = usdc::get_balance(user_address);
-    debug::print<u64>(&user_balance_before);
 
     let lmsr = borrow_global<LMSR>(market_address);
     assert!(lmsr.option_shares_1 == 31, 237);
@@ -615,7 +609,6 @@ module message_board_addr::chronos_gambit{
 
     let net_diff = sub(pricing_function(31, 47, 250), pricing_function(31, 10, 250));
     let amount_invested_4 = round_to_6_decimals(net_diff);
-    debug::print<u64>(&amount_invested_3);
 
     // check buying shares
     buy_shares(user_1, market_id, option_4, shares_4);
@@ -626,12 +619,9 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 243);
 
     let user_balance_after = usdc::get_balance(user_address);
-    debug::print<u64>(&user_balance_after);
-
     // Check user data
     let user_data = borrow_global<UserData>(signer::address_of(user_1));
     let user_market_data = table::borrow(&user_data.market_to_data, market_id);
-    debug::print<u64>(&user_market_data.option_shares_2);
     assert!(user_market_data.option_shares_1 == 5, 244);
     assert!(user_market_data.option_shares_2 == 37, 245);
     assert!(user_market_data.profit_made == 0, 246);
@@ -639,5 +629,85 @@ module message_board_addr::chronos_gambit{
     // Balance check
     assert!(user_market_data.amount_invested == (amount_invested_4 + amount_invested_1), 247);
     assert!(user_balance_after == user_balance_before - amount_invested_4, 248);
-  }
+
+    // Get market balance
+    let market_address = get_market_address(market_id);
+    let market_balance_before = usdc::get_balance(market_address);
+    debug::print<u64>(&market_balance_before);
+    assert!(market_balance_before == amount_invested_1 + amount_invested_2 + amount_invested_3 + amount_invested_4, 249);
+    
+    ////////////////////
+    // Set the result //
+    ////////////////////
+    record_result(creator, market_id, 0);
+
+    // Get the LSMR data
+    let lmsr = borrow_global<LMSR>(market_address);
+    let payout_per_share = market_balance_before/lmsr.option_shares_1;
+    debug::print<u64>(&payout_per_share);
+
+    // Check the Market Metadata
+    let prediction_metadata = borrow_global<PredictionMarketMetaData>(market_address);
+    assert!(prediction_metadata.status == FINISHED, 250);
+    assert!(prediction_metadata.result == option::some<u8>(0), 250);
+    assert!(prediction_metadata.payout_per_share == option::some<u64>(payout_per_share), 250);
+
+    // cashin out -> user1
+    let user_address = signer::address_of(user_1);
+
+    // User balance before
+    let user_balance_before = usdc::get_balance(user_address);
+
+    // User's userdata
+    let user_data = borrow_global<UserData>(signer::address_of(user_1));
+    let user_market_data = table::borrow(&user_data.market_to_data, market_id);
+    let no_of_winning_shares = user_market_data.option_shares_1;
+
+    // cash out
+    withdraw_payout(user_1, market_id);
+
+    // User balance after
+    let expected_earnings = no_of_winning_shares * payout_per_share;
+    let user_balance_after = usdc::get_balance(user_address);
+
+    // Check market balance
+    let market_balance_after_1 = usdc::get_balance(market_address);
+
+    assert!(user_balance_after == user_balance_before + expected_earnings, 251);
+    assert!(market_balance_after_1 == market_balance_before - expected_earnings, 252);
+
+    // Check user's data
+    let user_data = borrow_global<UserData>(signer::address_of(user_1));
+    let user_market_data = table::borrow(&user_data.market_to_data, market_id);
+    assert!(user_market_data.profit_made == expected_earnings, 253);
+
+    // cashin out -> user2
+    let user_address = signer::address_of(user_2);
+
+    // User balance before
+    let user_balance_before = usdc::get_balance(user_address);
+
+    // User's userdata
+    let user_data = borrow_global<UserData>(signer::address_of(user_2));
+    let user_market_data = table::borrow(&user_data.market_to_data, market_id);
+    let no_of_winning_shares = user_market_data.option_shares_1;
+
+    // cash out
+    withdraw_payout(user_2, market_id);
+
+    // User balance after
+    let expected_earnings = no_of_winning_shares * payout_per_share;
+    let user_balance_after = usdc::get_balance(user_address);
+
+    // Check market balance
+    let market_balance_after_2 = usdc::get_balance(market_address);
+
+    assert!(user_balance_after == user_balance_before + expected_earnings, 254);
+    assert!(market_balance_after_2 == market_balance_after_1 - expected_earnings, 255);
+
+    // Check user's data
+    let user_data = borrow_global<UserData>(signer::address_of(user_2));
+    let user_market_data = table::borrow(&user_data.market_to_data, market_id);
+    assert!(user_market_data.profit_made == expected_earnings, 256);
+  } 
 }
