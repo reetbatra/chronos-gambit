@@ -41,11 +41,19 @@ Chrono's Gambit is a cutting-edge decentralized prediction market platform built
 For all other available CLI commands, can run `npx aptos` and see a list of all available commands.
 
 
-//Do you want to publish this package at object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957 [yes/no] 
+<!-- //Do you want to publish this package at object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957 [yes/no] 
 
 
 Transaction submitted: https://explorer.aptoslabs.com/txn/0xaa0dbbf98c40f23873b5780e238ac5cd1ab8e810adaf74574a97c37844689aae?network=devnet
 Code was successfully deployed to object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957.
 
 
-Object Code=0x49da297f6e05d90ebd319e05d6a396acbb64e641f15b1741a4d2dc44b029f29b
+Object Code=0x49da297f6e05d90ebd319e05d6a396acbb64e641f15b1741a4d2dc44b029f29b -->
+
+
+Transaction submitted: https://explorer.aptoslabs.com/txn/0xd27b35e39ac6df8e261fbff4dcd4947edfe3e18b09add336a0b7ad1ecbeb317e?network=testnet
+Code was successfully deployed to object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957.
+
+
+Transaction submitted: https://explorer.aptoslabs.com/txn/0x2176e951b12a99de5da63d0a152cbcaadfd869af1687fcf0065dedf897fafe91?network=testnet
+Code was successfully deployed to object address0x49da297f6e05d90ebd319e05d6a396acbb64e641f15b1741a4d2dc44b029f29b

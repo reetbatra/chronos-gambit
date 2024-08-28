@@ -10,7 +10,7 @@ export function WalletProvider({ children }: PropsWithChildren) {
   return (
     <AptosWalletAdapterProvider
       autoConnect={true}
-      dappConfig={{ network: "devnet" as Network }}
+      dappConfig={{ network: "testnet" as Network }}
       onError={(error) => {
         toast({
           variant: "destructive",

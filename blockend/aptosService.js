@@ -1,6 +1,11 @@
 // aptosService.js
 
 import { aptosClient } from "@/utils/aptosClient";
+import { Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
+
+
+export const config = new AptosConfig({ network: Network.TESTNET });
+export const aptos = new Aptos(config);
 
 export async function initMarket(adminAccount, question, option1, option2, sharesPerOption) {
   const adminAddress = adminAccount;
