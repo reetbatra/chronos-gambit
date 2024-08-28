@@ -27,6 +27,12 @@ module message_board_addr::chronos_gambit{
   const ENOT_ADMIN: u64 = 0;
   const ENOT_INITIALIZED: u64 = 1;
   const ENOT_VALID_OPTION: u64 = 2;
+  const ENOT_FINISHED: u64 = 3;
+  const ENOT_IN_PROGRESS: u64 = 4;
+  const ENO_USERDATA: u64 = 5;
+  const ENO_MARKETDATA: u64 = 6;
+  const EADUPLICATE_REQUEST: u64 = 7;
+  const ENO_WINNING_SHARES: u64 = 8;
 
   // Share Decimals
   const SHARE_DECIMALs: u8 = 4;
@@ -57,7 +63,8 @@ module message_board_addr::chronos_gambit{
 		option_2: vector<u8>,
 		created_at: u64,
 		status: u8,
-		result: Option<u8>
+		result: Option<u8>,
+    payout_per_share: Option<u64>,
 	}
 
   struct LMSR has key, copy, drop {
@@ -121,6 +128,9 @@ module message_board_addr::chronos_gambit{
 
     // Get market data
     let (prediction_market_metadata, lmsr) = get_market_metadata(market_id);
+    
+    // Market should be in progress
+    assert!(prediction_market_metadata.status == IN_PROGRESS, ENOT_IN_PROGRESS);
 
     // Get object
     let market_address = get_market_address(market_id);
@@ -128,6 +138,71 @@ module message_board_addr::chronos_gambit{
     // Get Price
     let price = update_shares(user, market_id, option, shares);
     usdc::transfer(user, market_address, price);    
+  }
+
+  public entry fun record_result(
+    admin: &signer,
+    market_id: u64,
+    result: u8
+  ) acquires PredictionMarketMetaData, MarketCounter, LMSR {
+    // Todo: auth
+
+    // Check option provided
+    assert!(result < 2, ENOT_VALID_OPTION);
+
+    // Get metadata of the market
+    let prediction_market_metadata = get_market_metadata_mut(market_id);
+    let lsmr = get_lmsr(market_id);
+
+    // Cannot set result for a market more than once
+    assert!(prediction_market_metadata.status == IN_PROGRESS, ENOT_IN_PROGRESS);
+
+    // Find the payout per share
+    let vault_balance = usdc::get_balance(get_market_address(market_id));
+    let no_of_shares = if (result == 0) lsmr.option_shares_1 else lsmr.option_shares_2;
+    let payout_per_share = vault_balance/no_of_shares;
+
+    // update the result
+    prediction_market_metadata.status = FINISHED;
+    prediction_market_metadata.result = option::some<u8>(result);
+    prediction_market_metadata.payout_per_share = option::some<u64>(payout_per_share);
+  }
+
+  public entry fun withdraw_payout(
+    user: &signer,
+    market_id: u64
+  ) acquires PredictionMarketMetaData, MarketCounter, LMSR, UserData {
+    let signer_address = signer::address_of(user);
+
+    // Get market metadata
+    let (prediction_market_metadata, _) = get_market_metadata(market_id);
+
+    // Market should be in finished state
+    assert!(prediction_market_metadata.status == FINISHED, ENOT_FINISHED);
+
+    // Get user data
+    // User does not have userdata resource
+    assert!(exists<UserData>(signer_address), ENO_USERDATA);
+    let user_data = borrow_global_mut<UserData>(signer_address);
+
+    // User has not invested in the market
+    assert!(table::contains(&user_data.market_to_data, market_id), ENO_MARKETDATA);
+    let user_market_data = table::borrow_mut(&mut user_data.market_to_data, market_id);
+
+    let winning_shares = if (prediction_market_metadata.result == option::some<u8>(0)) user_market_data.option_shares_1 else user_market_data.option_shares_2;
+    // User has no winning shares
+    assert!(winning_shares != 0, ENO_WINNING_SHARES);
+
+    // User already cashed out
+    assert!(user_market_data.profit_made == 0, EADUPLICATE_REQUEST);
+
+    // User's payout
+    let profit_made = winning_shares * (*option::borrow(&prediction_market_metadata.payout_per_share));
+
+    // Todo: make the payment
+
+    // Update user's data
+    user_market_data.profit_made = profit_made;
   }
 
   public entry fun init_market(
@@ -160,7 +235,8 @@ module message_board_addr::chronos_gambit{
       option_2: option_2,
       created_at: timestamp::now_seconds(),
       status: IN_PROGRESS,
-      result: option::none<u8>()
+      result: option::none<u8>(),
+      payout_per_share: option::none<u64>(),
     });
 
     // Increment the counter
@@ -193,6 +269,28 @@ module message_board_addr::chronos_gambit{
 
       // Get the metadata
       borrow_global_mut<LMSR>(market_address)
+  }
+
+  inline fun get_lmsr(market_id: u64): LMSR acquires LMSR, MarketCounter {
+     // Get counter and check if the market with the market_id is initialized
+      let market_count = get_market_count();
+      assert!(market_count > market_id, ENOT_INITIALIZED);
+
+      let market_address = get_market_address(market_id);
+
+      // Get the metadata
+      *borrow_global<LMSR>(market_address)
+  }
+
+  inline fun get_market_metadata_mut(market_id: u64): &mut PredictionMarketMetaData acquires PredictionMarketMetaData, MarketCounter {
+     // Get counter and check if the market with the market_id is initialized
+      let market_count = get_market_count();
+      assert!(market_count > market_id, ENOT_INITIALIZED);
+
+      let market_address = get_market_address(market_id);
+
+      // Get the metadata
+      borrow_global_mut<PredictionMarketMetaData>(market_address)
   }
 
   fun update_shares(user: &signer, market_id: u64, option: u8, shares: u64): u64 acquires MarketCounter, LMSR, UserData {
@@ -499,5 +597,47 @@ module message_board_addr::chronos_gambit{
     // Balance check
     assert!(user_market_data.amount_invested == (amount_invested_3 + amount_invested_2), 235);
     assert!(user_balance_after == user_balance_before - amount_invested_3, 236);
+    
+    ///////////////////////
+    // User 1 => 2nd buy //
+    ///////////////////////
+    let user_address = signer::address_of(user_1);
+    let shares_4 = 37;
+    let option_4 = 1;
+
+    let user_balance_before = usdc::get_balance(user_address);
+    debug::print<u64>(&user_balance_before);
+
+    let lmsr = borrow_global<LMSR>(market_address);
+    assert!(lmsr.option_shares_1 == 31, 237);
+    assert!(lmsr.option_shares_2== 10, 238);
+    assert!(lmsr.liquidity_param == liquidity_param_1, 239);
+
+    let net_diff = sub(pricing_function(31, 47, 250), pricing_function(31, 10, 250));
+    let amount_invested_4 = round_to_6_decimals(net_diff);
+    debug::print<u64>(&amount_invested_3);
+
+    // check buying shares
+    buy_shares(user_1, market_id, option_4, shares_4);
+
+    let lmsr = borrow_global<LMSR>(market_address);
+    assert!(lmsr.option_shares_1 == 31, 241);
+    assert!(lmsr.option_shares_2 == 47, 242);
+    assert!(lmsr.liquidity_param == liquidity_param_1, 243);
+
+    let user_balance_after = usdc::get_balance(user_address);
+    debug::print<u64>(&user_balance_after);
+
+    // Check user data
+    let user_data = borrow_global<UserData>(signer::address_of(user_1));
+    let user_market_data = table::borrow(&user_data.market_to_data, market_id);
+    debug::print<u64>(&user_market_data.option_shares_2);
+    assert!(user_market_data.option_shares_1 == 5, 244);
+    assert!(user_market_data.option_shares_2 == 37, 245);
+    assert!(user_market_data.profit_made == 0, 246);
+
+    // Balance check
+    assert!(user_market_data.amount_invested == (amount_invested_4 + amount_invested_1), 247);
+    assert!(user_balance_after == user_balance_before - amount_invested_4, 248);
   }
 }
