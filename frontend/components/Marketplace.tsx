@@ -18,18 +18,24 @@ const bets = [
   },
   {
     id: "3",
+    question: "Beiber baby: Boy or Girl?",
+    firstOption: "Boy",
+    secondOption: "Girl",
+  },
+  {
+    id: "4",
     question: "Pavel Durov relased in August?",
     firstOption: "Yes",
     secondOption: "No",
   },
   {
-    id: "4",
+    id: "5",
     question: "Will Israel invade Lebanon before September",
     firstOption: "Yes",
     secondOption: "No",
   },
   {
-    id: "5",
+    id: "6",
     question: "Will Taylor Swift endorse Kamala Harris before elections?",
     firstOption: "Yes",
     secondOption: "No",

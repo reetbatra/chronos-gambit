@@ -5,6 +5,7 @@ import Marketplace from "./components/Marketplace";
 import Homepage from "./components/Homepage";
 import Portfolio from "./components/Portfolio";
 import Admin from "./components/Admin/Admin";
+import BetDetails from './components/BetDetails';
 import Market from './components/Market/Market';
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
               }
             />
             <Route path="/portfolio/:address" element={<Portfolio/>} />
+            <Route path="/bet/:id" element={<BetDetails />} /> 
             <Route path="/admin" element={<Admin/>} />
             <Route path="/market/:address" element={<Market/>} />
 
