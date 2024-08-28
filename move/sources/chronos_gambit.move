@@ -33,6 +33,7 @@ module message_board_addr::chronos_gambit{
   const ENO_MARKETDATA: u64 = 6;
   const EADUPLICATE_REQUEST: u64 = 7;
   const ENO_WINNING_SHARES: u64 = 8;
+  const EINVALID_NO_SHARES: u64 = 9;
 
   // Share Decimals
   const SHARE_DECIMALs: u8 = 4;
@@ -123,6 +124,9 @@ module message_board_addr::chronos_gambit{
     option: u8,
     shares: u64,
   ) acquires MarketCounter, PredictionMarketMetaData, LMSR, UserData {
+    // Check shares provided
+    assert!(shares != 0, EINVALID_NO_SHARES);
+
     // Check option provided
     assert!(option < 2, ENOT_VALID_OPTION);
 
