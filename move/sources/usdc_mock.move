@@ -97,9 +97,10 @@ module message_board_addr::usdc{
   }
 
   // Public Fns
-  public fun mint(admin: &signer, to: address, amount: u64) acquires ObjectController {
-    let admin_address = signer::address_of(admin);
-    assert!(admin_address == @message_board_addr, ENOT_ADMIN);
+  public entry fun mint(admin: &signer, to: address, amount: u64) acquires ObjectController {
+    // -> Admin auth removed for demo
+    // let admin_address = signer::address_of(admin);
+    // assert!(admin_address == @message_board_addr, ENOT_ADMIN);
 
     // Get mintref
     let object_controller = get_object_controller();
@@ -112,7 +113,7 @@ module message_board_addr::usdc{
     fungible_asset::mint_to(&object_controller.mint_ref, destination_primary_store, amount);
   }
 
-  public fun transfer(user: &signer, to: address, amount: u64) {
+  public entry fun transfer(user: &signer, to: address, amount: u64) {
     // Get user metadata
     let metadata = get_metadata();
     
