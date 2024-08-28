@@ -1,78 +1,42 @@
 import { Grid } from "@chakra-ui/react";
 import BetCard from "./BetCard";
-import { useEffect} from "react";
-import {Link} from "react-router-dom";
+import { useEffect, useState} from "react";
 import { Aptos, AptosConfig, InputViewFunctionData, U64} from "@aptos-labs/ts-sdk";
 import {  Network } from "aptos";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
+import { getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
 
 
  const config = new AptosConfig({ network: Network.TESTNET });
  const aptos = new Aptos(config);
 
-const bets = [
-  {
-    id: "1",
-    question: "Will Chrono's Gambit win the Aptos winter hackathon?",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-  {
-    id: "2",
-    question: "Who will win the US elections?",
-    firstOption: "Kamala Harris",
-    secondOption: "Donald Trump",
-  },
-  {
-    id: "3",
-    question: "Beiber baby: Boy or Girl?",
-    firstOption: "Boy",
-    secondOption: "Girl",
-  },
-  {
-    id: "4",
-    question: "Pavel Durov relased in August?",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-  {
-    id: "5",
-    question: "Will Israel invade Lebanon before September",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-  {
-    id: "6",
-    question: "Will Taylor Swift endorse Kamala Harris before elections?",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-];
-
 
 const Marketplace = () => {
 
     const {account} = useWallet();
+    const [marketCount, setMarketCount] = useState(0);
+    const [bets, setBets] = useState<any[]>([]);
+    const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
 
-  const moduleAddress = "0x9dae74c3df3e6bcf432d55b97ce26681eded52103d2a109163a1435912ce6271";
+    
+
 
   useEffect(() => {
 
     const fetchBets = async () => {
 
-        try {
+        setBets([]);
+        getMarketCount().then((m:any) => {
+                   let marketCount = m;
+                   for(let i = 0; i < marketCount; i++){
+                     getMarketMetadata(i).then((m:any) => {
+                        if(m[0].status==0)
+                       setBets((prevBets) => [...prevBets, m[0]]);
+                       console.log("m", m);
+                     });
+                     }
 
-        const payload: InputViewFunctionData = {
-             function: `${moduleAddress}::chronos_gambit::get_market_count`,
-             functionArguments: [],
-        }
-
-         const marketCount = await aptos.view({ payload})
-    console.log("marketCount: ", marketCount);
-  } catch (e: any) {
-    console.error(e);}
-
-
+             })        
     };
 
     fetchBets();

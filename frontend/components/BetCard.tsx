@@ -3,9 +3,11 @@ import { useNavigate } from 'react-router-dom';
 
 type Props = {
     id: string,
+    createdAt: string,
+    imageURL:string;
     question: string;
-    firstOption: string;
-    secondOption: string;
+    option_1: string;
+    option_2: string;
 };
 
 const BetCard = (props: Props) => {
@@ -20,6 +22,14 @@ const BetCard = (props: Props) => {
     window.alert(`Bet ${value}`);
   }
 
+  function hexToAscii(hex:any) {
+        let str = '';
+        for (let i = 2; i < hex.length; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    }
+
   return (
     <Stack 
       width={"350px"} 
@@ -30,17 +40,18 @@ const BetCard = (props: Props) => {
       color={"white"}
       onClick={handleCardClick} 
     >
+    //https://bit.ly/dan-abramov
       <Flex height={"80%"}>
-        <Avatar name='Dan Abrahmov' src='https://bit.ly/dan-abramov' />
+        <Avatar name='Dan Abrahmov' src={props?.imageURL} />
         <div style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px", fontSize: "17px" }} className='font-jbm'>
-          {props.question}
+          {hexToAscii(props.question)}
         </div>
       </Flex>
 
       {/* Yes/No Buttons */}
       <div className="px-4 pb-2 flex justify-between font-jbm">
         <button
-          onClick={(e) => { e.stopPropagation(); handleBetClick(props.firstOption); }} 
+          onClick={(e) => { e.stopPropagation(); handleBetClick(props.option_1); }} 
           style={{
             borderColor: "#008000",
             borderWidth: "2px",
@@ -55,10 +66,10 @@ const BetCard = (props: Props) => {
           }}
           className="text-white font-bold rounded hover:bg-green-600"
         >
-          Bet {props.firstOption}
+          Bet {hexToAscii(props.option_1)}
         </button>
         <button
-          onClick={(e) => { e.stopPropagation(); handleBetClick(props.secondOption); }} // Prevent click propagation to the card click
+          onClick={(e) => { e.stopPropagation(); handleBetClick(props.option_2); }} // Prevent click propagation to the card click
           style={{
             borderColor: "#FF0000",
             borderWidth: "2px",
@@ -73,13 +84,13 @@ const BetCard = (props: Props) => {
           }}
           className="text-white font-bold rounded hover:bg-red-600"
         >
-          Bet {props.secondOption}
+          Bet {hexToAscii(props.option_2)}
         </button>
       </div>
 
       {/* Card Footer */}
       <div className="flex mt-1 text-gray-500 text-sm justify-between font-jbm">
-        Volume: $190mn  Total Investors: 20
+        {new Date(props?.createdAt).toLocaleDateString()}
       </div>
     </Stack>
   );

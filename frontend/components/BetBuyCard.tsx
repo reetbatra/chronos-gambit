@@ -1,58 +1,53 @@
 import {Divider, Flex, Progress, Stack, Text} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
+import {useWallet} from '@aptos-labs/wallet-adapter-react';
 
 
-const bets = [
-  {
-    id: "1",
-    question: "Will Chrono's Gambit win the Aptos winter hackathon?",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-  {
-    id: "2",
-    question: "Who will win the US elections?",
-    firstOption: "Kamala Harris",
-    secondOption: "Donald Trump",
-  },
-  {
-    id: "3",
-    question: "Beiber baby: Boy or Girl?",
-    firstOption: "Boy",
-    secondOption: "Girl",
-  },
-  {
-    id: "4",
-    question: "Pavel Durov relased in August?",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-  {
-    id: "5",
-    question: "Will Israel invade Lebanon before September",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-  {
-    id: "6",
-    question: "Will Taylor Swift endorse Kamala Harris before elections?",
-    firstOption: "Yes",
-    secondOption: "No",
-  },
-];
+
 
 const BetBuyCard = () => {
   const { id } = useParams<{ id: string }>(); // Get the bet ID from the URL
   const [bet, setBet] = useState<any>(null); // State to hold the bet data
+  const [lmsr, setLmsr] = useState<any>(null);
   const [amount, setAmount] = useState<number>(0); // State for bet amount input
   const [selectedOption, setSelectedOption] = useState<string | null>(null); // State to track selected option
 
-  useEffect(() => {
-    // Fetch the bet details using the ID (replace with real fetching logic if needed)
-    const foundBet = bets.find((bet) => bet.id === id);
-    setBet(foundBet);
-  }, [id]);
+  const {account} = useWallet();
+
+   function hexToAscii(hex:any) {
+        let str = '';
+        for (let i = 2; i < hex.length; i += 2) {
+            str += String.fromCharCode(parseInt(hex.substr(i, 2), 16));
+        }
+        return str;
+    }
+
+useEffect(() => {
+    const fetchBets = async () => {
+
+        getMarketCount().then((m:any) => {
+                   let marketCount = m;
+                   for(let i = 0; i < marketCount; i++){
+                     getMarketMetadata(i).then((m:any) => {
+                       console.log("m", m[0].id);               
+                        if(m[0].id==id)
+                        {setBet(m[0]);
+                        setLmsr(m[1]);
+                        return;
+                        }
+                     });
+                     }
+
+             })        
+        };
+
+        fetchBets();
+  }, [account]);
+
+
+
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseFloat(e.target.value);
@@ -85,22 +80,25 @@ const BetBuyCard = () => {
   };
 
   return (
-    <Flex minHeight={"100vh"} p={5} width={"100%"} color={"white"} justifyContent={"space-between"}>
+    
+    <>
+        {!bet && <div style={{color: "white"}}>Loading...</div>} 
+        {bet && <Flex minHeight={"100vh"} p={5} width={"100%"} color={"white"} justifyContent={"space-between"}>
         <Stack width={"60%"}>
-            <h2 className="text-xl font-jbm font-bold mb-3" style={{color: "#CCCCFF"}}>{bet?.question}</h2>
-            <Text fontSize={"lg"} mb={10} className="font-jbm">{bet?.description}</Text>
+            <h2 className="text-xl font-jbm font-bold mb-3" style={{color: "#CCCCFF"}}>{hexToAscii(bet?.question)}</h2>
+            <Text fontSize={"lg"} mb={10} className="font-jbm">{hexToAscii(bet?.description)}</Text>
 
             <Stack>
                 <Flex>
-                    <Text mr={2}>{bet?.firstOption} </Text>
+                    <Text mr={2}>{hexToAscii(bet?.option_1)}</Text>
                     <Text> - 100 Shares</Text>
                 </Flex>
-                    <Progress width={"50%"} colorScheme='green' size='sm' value={50} />
+                    <Progress width={"50%"} colorScheme='green' size='sm' value={lmsr?.option_shares_1} />
                 <Flex width={"100%"}>
-                    <Text mr={2}>{bet?.secondOption}  {" "}</Text>
+                    <Text mr={2}>{hexToAscii(bet?.option_2)}  {" "}</Text>
                     <Text> - 50 Shares</Text>
                 </Flex>
-                 <Progress width={"50%"} colorScheme='red' size='sm' value={40} />
+                 <Progress width={"50%"} colorScheme='red' size='sm' value={lmsr?.option_shares_2} />
 
             </Stack>
 
@@ -115,10 +113,10 @@ const BetBuyCard = () => {
                 The Logarithmic Scoring Rule is widely used in various fields, including economics, 
                 machine learning, and prediction markets, because it provides a robust way to evaluate predictions.
                 It’s particularly valuable for situations where honesty and accuracy are critical. */}
-
+{/* 
                 <h2 style={{color: "#CCCCFF"}} className="text-md font-jbm font-bold mt-5">
                 Explore our platform and see how the Logarithmic Scoring Rule can help you sharpen your predictive skills!
-                </h2>
+                </h2> */}
 
             </Text>
 
@@ -127,15 +125,15 @@ const BetBuyCard = () => {
             <div style={{ color: 'white', backgroundColor: '#18191C' }} className="font-jbm p-4 rounded-lg border-2 border-[#CCCCFF] shadow-md w-full max-w-sm mx-auto">
               <div className="text-center mb-4">
                 <h2 className="text-lg font-bold">Buy Bet</h2>
-                {bet && <h3 className="text-sm text-gray-300 mt-2">{bet.question}</h3>}
+                {bet && <h3 className="text-sm text-gray-300 mt-2">{hexToAscii(bet?.question)}</h3>}
               </div>
 
       {bet && (
         <>
           <div className="flex flex-col items-center mb-4">
             <button
-              onClick={() => handleOptionClick(bet.firstOption)}
-              className={`text-white font-bold py-2 px-4 mb-2 rounded ${selectedOption === bet.firstOption ? 'bg-green-600' : 'hover:bg-green-600'}`}
+              onClick={() => handleOptionClick(bet?.option_1)}
+              className={`text-white font-bold py-2 px-4 mb-2 rounded ${selectedOption === bet?.option_1 ? 'bg-green-600' : 'hover:bg-green-600'}`}
               style={{
                 borderColor: '#008000',
                 borderWidth: '2px',
@@ -143,11 +141,11 @@ const BetBuyCard = () => {
                 width: '100%',
               }}
             >
-              Bet {bet.firstOption}
+              Bet {hexToAscii(bet.option_1)}
             </button>
             <button
-              onClick={() => handleOptionClick(bet.secondOption)}
-              className={`text-white font-bold py-2 px-4 rounded ${selectedOption === bet.secondOption ? 'bg-red-600' : 'hover:bg-red-600'}`}
+              onClick={() => handleOptionClick(bet?.option_2)}
+              className={`text-white font-bold py-2 px-4 rounded ${selectedOption === bet?.option_2 ? 'bg-red-600' : 'hover:bg-red-600'}`}
               style={{
                 borderColor: '#FF0000',
                 borderWidth: '2px',
@@ -155,7 +153,7 @@ const BetBuyCard = () => {
                 width: '100%',
               }}
             >
-              Bet {bet.secondOption}
+              Bet {hexToAscii(bet?.option_2)}
             </button>
           </div>
 
@@ -216,7 +214,8 @@ const BetBuyCard = () => {
       )}
             </div>
         </Stack>
-    </Flex>
+    </Flex>}
+    </>
   );
 };
 

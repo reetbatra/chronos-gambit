@@ -23,6 +23,8 @@ function AdminForm({}: Props) {
 
     const [formData, setFormData] = useState({
 		question: "",
+        imageURL:"",
+        description:"",
         firstShareOption:"",
         secondShareOption:"",
         liquidityParameter:0
@@ -30,16 +32,6 @@ function AdminForm({}: Props) {
 
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-        // const markets = getMarketCount().then((m:any) => {
-        //             console.log("markets: ",m);
-        //         })
-        
-        // getMarketMetadata(0).then((m:any) => {
-        //             console.log("marketMetadata: ",m);
-        //         })
-                
-
 		const { name, value } = event.target
 		setFormData((prevFormData) => ({
 			...prevFormData,
@@ -49,7 +41,7 @@ function AdminForm({}: Props) {
         console.log("acc: " , acc);
 	}
 
-    const moduleAddress = "0x9dae74c3df3e6bcf432d55b97ce26681eded52103d2a109163a1435912ce6271";
+    const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
 
 
 
@@ -61,20 +53,22 @@ function AdminForm({}: Props) {
             return;
         }
 
-         await aptos.transaction.build.simple({
-            sender: account.address ?? "",
-            data: {
-              function: `${moduleAddress}::chronos_gambit::init_market`,
-              typeArguments: [],
-              functionArguments: [
+        //  await aptos.transaction.build.simple({
+        //     sender: account.address ?? "",
+        //     data: {
+        //       function: `${moduleAddress}::chronos_gambit::init_market`,
+        //       typeArguments: [],
+        //       functionArguments: [
 
-                formData.question, 
-                formData.firstShareOption, 
-                formData.secondShareOption, 
-                new U64(formData.liquidityParameter)
-               ],
-            },
-        });
+        //         formData.question,
+        //         formData.imageURL,
+        //         formData.description, 
+        //         formData.firstShareOption, 
+        //         formData.secondShareOption, 
+        //         new U64(formData.liquidityParameter)
+        //        ],
+        //     },
+        // });
 
 
         // const value = await client.getAccountResources(moduleAddress);
@@ -85,7 +79,7 @@ function AdminForm({}: Props) {
                 const committedTxn = await signAndSubmitTransaction({  data: {
                  function: `${moduleAddress}::chronos_gambit::init_market`,
                  typeArguments: [],
-                 functionArguments: [formData.question, formData.firstShareOption, formData.secondShareOption, formData.liquidityParameter],
+                 functionArguments: [formData.question, formData.imageURL, formData.description, formData.firstShareOption, formData.secondShareOption, formData.liquidityParameter],
             }, });
                 await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
                 console.log(`Committed transaction: ${committedTxn.hash}`);
@@ -157,6 +151,30 @@ function AdminForm({}: Props) {
 			name="question"
 			placeholder="Prediction Question"
 			value={formData.question}
+			onChange={handleInputChange}
+		/>
+
+        <label htmlFor="imageURL">Image URL</label>
+		<Input
+			required
+			type="text"
+			marginBottom="20px"
+			marginTop="2px"
+			name="imageURL"
+			placeholder="Add Image URL"
+			value={formData.imageURL}
+			onChange={handleInputChange}
+		/>
+
+        <label htmlFor="description">Description</label>
+		<Input
+			required
+			type="text"
+			marginBottom="20px"
+			marginTop="2px"
+			name="description"
+			placeholder="Add Description"
+			value={formData.description}
 			onChange={handleInputChange}
 		/>
 
