@@ -25,10 +25,9 @@ const [imageURL, setImageURL] = useState<any>("");
 }, [props]);
 
 
-  const handleBetClick = (value: string) => {
-    // handle the click event here
-    window.alert(`Bet ${value}`);
-  }
+//   const handleBetClick = (value: string) => {
+//     window.na
+//   }
 
   function hexToAscii(hex:any) {
         let str = '';
@@ -50,7 +49,7 @@ const [imageURL, setImageURL] = useState<any>("");
     >
     //https://bit.ly/dan-abramov
       <Flex height={"80%"}>
-        <Avatar name='Dan Abrahmov' src={imageURL} />
+        <Avatar name='Chronos Gambit' src={imageURL} />
         <div style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px", fontSize: "17px" }} className='font-jbm'>
           {hexToAscii(props.question)}
         </div>
@@ -59,7 +58,7 @@ const [imageURL, setImageURL] = useState<any>("");
       {/* Yes/No Buttons */}
       <div className="px-4 pb-2 flex justify-between font-jbm">
         <button
-          onClick={(e) => { e.stopPropagation(); handleBetClick(props.option_1); }} 
+          onClick={ handleCardClick} 
           style={{
             borderColor: "#008000",
             borderWidth: "2px",
@@ -77,7 +76,7 @@ const [imageURL, setImageURL] = useState<any>("");
           Bet {hexToAscii(props.option_1)}
         </button>
         <button
-          onClick={(e) => { e.stopPropagation(); handleBetClick(props.option_2); }} // Prevent click propagation to the card click
+          onClick={handleCardClick} // Prevent click propagation to the card click
           style={{
             borderColor: "#FF0000",
             borderWidth: "2px",
