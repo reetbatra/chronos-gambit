@@ -35,6 +35,7 @@ function Activity({}: Props) {
               <Th color={"white"} style={{ fontFamily: "'JetBrains Mono'" }}>Share Type</Th>
               <Th color={"white"} style={{ fontFamily: "'JetBrains Mono'" }}>Total Shares</Th>
               <Th color={"white"} style={{ fontFamily: "'JetBrains Mono'" }}>Total Price</Th> 
+              <Th color={"white"} style={{ fontFamily: "'JetBrains Mono'" }}>Payout</Th> 
             </Tr>
           </Thead>
           <Tbody>
@@ -45,6 +46,7 @@ function Activity({}: Props) {
                 <Td className='font-jbm'>{trade.questionOption}</Td> 
                 <Td className='font-jbm'>{trade.totalShares}</Td> 
                 <Td className='font-jbm'>{trade.totalPrice}</Td> 
+                <Td className='font-jbm'><button className="bg-white text-black p-3 rounded-md">Withdraw</button></Td> 
               </Tr>
             ))}
           </Tbody>
