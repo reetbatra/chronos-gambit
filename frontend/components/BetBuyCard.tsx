@@ -238,7 +238,7 @@ useEffect(() => {
 
           <div className="flex flex-col items-center mb-4">
             {/* Balance and Max Buttons Above Input */}
-            <div className="flex justify-between w-full mb-2">
+            {/* <div className="flex justify-between w-full mb-2">
               <button
                 className="text-white font-bold py-1 px-2 rounded"
                 
@@ -251,7 +251,7 @@ useEffect(() => {
               >
                 Max
               </button> */}
-            </div>
+            {/* </div> */} 
 
             {/* Input Field and Increment/Decrement Buttons */}
             <div className="flex flex-row items-center w-max mb-4">
