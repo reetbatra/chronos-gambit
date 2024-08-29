@@ -54,6 +54,7 @@ function Activity({}: Props) {
                 const marketMetadata = await getMarketMetadata(i);
                 console.log("Market Metadata:", marketMetadata[0]);
 
+                if(userData[0][i]?.amount_invested!=0)
                 updatedUserMarketData.push({ userData: userData[0][i], betData: marketMetadata[0] });
             }
 

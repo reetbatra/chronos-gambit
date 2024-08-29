@@ -30,7 +30,7 @@ useEffect(() => {
 
 
                 if (marketMetadata.length>0 && marketMetadata?.[0]?.status === 0) {
-                    if(i!=8)
+                    if(i!=8 && i!=5)
                     newBets.push(marketMetadata[0]); // Add valid bets to the array
                 }
             }

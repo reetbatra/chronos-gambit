@@ -40,7 +40,7 @@ const [imageURL, setImageURL] = useState<any>("");
   return (
     <Stack 
       width={"350px"} 
-      height={"250px"} 
+      height={"200px"} 
       bg={"#18191C"} 
       className="rounded-lg shadow-md p-4 font-jbm cursor-pointer" 
       key={props.id} 
@@ -49,7 +49,7 @@ const [imageURL, setImageURL] = useState<any>("");
     >
     //https://bit.ly/dan-abramov
       <Flex height={"80%"}>
-        <Avatar name='Chronos Gambit' src={imageURL} />
+        <Avatar mt={3}name='Chronos Gambit' src={imageURL} />
         <div style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px", fontSize: "17px" }} className='font-jbm'>
           {hexToAscii(props.question)}
         </div>
@@ -61,17 +61,17 @@ const [imageURL, setImageURL] = useState<any>("");
           onClick={ handleCardClick} 
           style={{
             borderColor: "#008000",
+            width: "50%",
             borderWidth: "2px",
             height: "auto", 
-            borderRadius: "10px",
-            padding: "5px 10px", 
+            padding: "10px 10px", 
             minWidth: "80px",
             maxWidth: "150px", 
             wordBreak: "break-word", 
             textAlign: "center",
             fontSize: "12px", 
           }}
-          className="text-white font-bold rounded hover:bg-green-600"
+          className="text-white font-bold hover:bg-green-600"
         >
           Bet {hexToAscii(props.option_1)}
         </button>
@@ -79,9 +79,10 @@ const [imageURL, setImageURL] = useState<any>("");
           onClick={handleCardClick} // Prevent click propagation to the card click
           style={{
             borderColor: "#FF0000",
+                        width: "50%",
+
             borderWidth: "2px",
             height: "auto", 
-            borderRadius: "10px",
             padding: "5px 10px", 
             minWidth: "80px",
             maxWidth: "150px", 
@@ -89,7 +90,7 @@ const [imageURL, setImageURL] = useState<any>("");
             textAlign: "center",
             fontSize: "12px", 
           }}
-          className="text-white font-bold rounded hover:bg-red-600"
+          className="text-white font-bold hover:bg-red-600"
         >
           Bet {hexToAscii(props.option_2)}
         </button>
