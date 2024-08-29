@@ -10,7 +10,6 @@ import {
 } from "@aptos-labs/wallet-adapter-react";
 type Props = {}
 
-// const client = new AptosClient("https://fullnode.devnet.aptoslabs.com");
 
 function AdminForm({}: Props) {
 

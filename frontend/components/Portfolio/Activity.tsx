@@ -19,16 +19,7 @@ import {getMarketMetadata, getUserMarketData} from "../../../blockend/aptosServi
 
 type Props = {};
 
-const tradeData = [
-    {
-        id: "1",
-        activity: "Buy",
-        question: "Who will be new president of USA?",
-        questionOption: "Donald Trump",
-        totalShares: 13,
-        totalPrice: "24.78",
-    }
-];
+
 
 function Activity({}: Props) {
 
@@ -41,9 +32,6 @@ function Activity({}: Props) {
     }
 
     const {account, signAndSubmitTransaction} = useWallet()
-    const [bet, setBet] = useState<any>(null); // State to hold the bet data
-    const [lmsr, setLmsr] = useState<any>(null);
-    const [bets, setBets] = useState<any>(null);
     const [userMarketData, setUserMarketData] = useState<any>(null);
 
     const config = new AptosConfig({ network: Network.TESTNET });
