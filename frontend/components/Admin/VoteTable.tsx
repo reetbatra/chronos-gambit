@@ -45,10 +45,10 @@ console.log(value)
         {/* <TableCaption>Your Activity on Chrono's Gambit</TableCaption> */}
         <Thead>
           <Tr>
-            <Th>Question</Th>
-            <Th>Received Data</Th>
-            <Th>Action</Th>
-            <Th>Result</Th>
+            <Th className='font-jbm'>Question</Th>
+            <Th className='font-jbm'>Received Data</Th>
+            <Th className='font-jbm'>Action</Th>
+            <Th className='font-jbm'>Result</Th>
           </Tr>
         </Thead>
         <Tbody>
@@ -56,10 +56,10 @@ console.log(value)
 
           {tradeData.map((trade) => (
             <Tr key={trade.id}>
-              <Td>{trade.question}</Td>
-              <Td>{trade.receivedData}</Td>
-              <Td> <Flex><Button color={"white"} _hover={{bg: "white", color: "black"}} variant='outline' mr={5}onClick={()=>handleVote(true)}>True</Button> <Button  _hover={{bg: "white", color: "black"}} color={"white"} variant='outline' onClick={()=>handleVote(false)}>False</Button></Flex></Td>
-              <Td>Yet to decide</Td>
+              <Td className='font-jbm'>{trade.question}</Td>
+              <Td className='font-jbm'>{trade.receivedData}</Td>
+              <Td className='font-jbm'> <Flex><Button color={"white"} _hover={{bg: "white", color: "black"}} variant='outline' mr={5}onClick={()=>handleVote(true)}>True</Button> <Button  _hover={{bg: "white", color: "black"}} color={"white"} variant='outline' onClick={()=>handleVote(false)}>False</Button></Flex></Td>
+              <Td className='font-jbm'>Yet to decide</Td>
             </Tr>
           ))}
         </Tbody>

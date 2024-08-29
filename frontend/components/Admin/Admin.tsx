@@ -12,7 +12,7 @@ function Admin({}: Props) {
         {/* <p>Voting Functionality</p> */}
         {/* <Flex> */}
         <Center>
-            <h1 className='font-jbm text-white font-bold text-2xl'>Build a Prediction Market</h1>
+            <h1 className='font-jbm text-white font-bold text-2xl'>Build your own Prediction Market</h1>
         </Center>
         <Center mt={10}>
                                 

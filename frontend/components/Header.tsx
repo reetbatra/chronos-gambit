@@ -14,7 +14,7 @@ export function Header() {
 // }, []);
 
   return (
-    <div style={{ backgroundColor:"#111214", display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', color:"white"}}>
+    <div style={{ backgroundColor:"#111214", display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', color:"white", borderBottom: '1px solid gray'}}>
       <div style={{ display: 'flex', alignItems: 'center' }}>
         <img src="/logonobg.png" alt="Logo" width={40} height={40} />
         <Link to="/" style={{ zIndex:1}}><h1 className="font-jbm text-xl">Chrono's Gambit</h1></Link>
@@ -23,7 +23,7 @@ export function Header() {
         <Link to="/marketplace" className="font-jbm text-l" style={{marginRight:"40px", zIndex:1}}>Marketplace</Link>
         <Link to={`/portfolio/${account?.address}`}  style={{marginRight:"40px", zIndex:1}} className="font-jbm text-l">Portfolio</Link>
         <Link to="/faq" className="font-jbm text-l" style={{marginRight:"40px", zIndex:1}}>FAQ's</Link>
-        <Link to="/admin" className="font-jbm text-l" style={{zIndex:1}}>Admin Dashboard</Link>
+        <Link to="/admin" className="font-jbm text-l" style={{zIndex:1}}>Create Market</Link>
 
       </div>
       <div className="ml-auto">

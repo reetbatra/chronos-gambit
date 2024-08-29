@@ -11,10 +11,8 @@ type Props = {
     option_2: string;
 };
 
-
-
 const BetCard = (props: Props) => {
-  const navigate = useNavigate(); 
+const navigate = useNavigate(); 
 const [imageURL, setImageURL] = useState<any>("");
 
   const handleCardClick = () => {
@@ -99,8 +97,9 @@ const [imageURL, setImageURL] = useState<any>("");
       </div>
 
       {/* Card Footer */}
-      <div className="flex mt-1 text-gray-500 text-sm justify-between font-jbm">
+      <div className="flex flex-col m-1 text-gray-500 text-sm justify-between font-jbm">
         {new Date(props?.createdAt).toLocaleDateString()}
+        <p className='font-jbm'>⚠️ Due to slippage tolerance, price may vary.</p>
       </div>
     </Stack>
   );
