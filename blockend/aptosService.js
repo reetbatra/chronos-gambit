@@ -2,13 +2,14 @@
 
 import { aptosClient } from "@/utils/aptosClient";
 import { Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
+import { useWallet } from "@aptos-labs/wallet-adapter-react";
+import {  Network } from "aptos";
 
 
 export const config = new AptosConfig({ network:"testnet" });
 export const aptos = new Aptos(config);
 
 const moduleAddress  = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
-
 export async function initMarket(adminAccount, question, option1, option2, sharesPerOption) {
   const adminAddress = adminAccount;
   const payload = {
@@ -56,17 +57,17 @@ export async function getMarketMetadata(marketId) {
 
 }
 
-export async function buyShares(marketId, shareOption, numberOfShares){
-    if(account){
-                const committedTxn = await signAndSubmitTransaction({  data: {
-                 function: `${moduleAddress}::chronos_gambit::buy_shares`,
-                 typeArguments: [],
-                 functionArguments: [marketId, shareOption, numberOfShares],
-            }, });
-                await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
-                console.log(`Committed transaction: ${committedTxn.hash}`);
-        }else{
-            console.log("Account not available");
+export async function getUserMarketData(userAddress){
+    try{
+    const payload = {
+             function: `${moduleAddress}::chronos_gambit::get_user_market_data`,
+             functionArguments: [userAddress],
         }
 
+         const marketMetadata = await aptos.view({ payload})
+         return marketMetadata
+  } catch (e) {
+    console.error(e);
+    };
+    
 }

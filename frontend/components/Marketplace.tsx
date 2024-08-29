@@ -1,10 +1,10 @@
-import { Grid } from "@chakra-ui/react";
-import BetCard from "./BetCard";
-import { useEffect, useState} from "react";
-import { Aptos, AptosConfig, InputViewFunctionData, U64} from "@aptos-labs/ts-sdk";
-import {  Network } from "aptos";
+import {Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
-import { getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
+import {Grid} from "@chakra-ui/react";
+import {Network} from "aptos";
+import {useEffect, useState} from "react";
+import {getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
+import BetCard from "./BetCard";
 
 
  const config = new AptosConfig({ network: Network.TESTNET });
@@ -14,34 +14,37 @@ import { getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
 const Marketplace = () => {
 
     const {account} = useWallet();
-    const [marketCount, setMarketCount] = useState(0);
     const [bets, setBets] = useState<any[]>([]);
-    const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
 
     
 
 
-  useEffect(() => {
-
+useEffect(() => {
     const fetchBets = async () => {
+        setBets([]); // Clear previous bets
 
-        setBets([]);
-        getMarketCount().then((m:any) => {
-                   let marketCount = m;
-                   for(let i = 0; i < marketCount; i++){
-                     getMarketMetadata(i).then((m:any) => {
-                        if(m[0].status==0)
-                       setBets((prevBets) => [...prevBets, m[0]]);
-                       console.log("m", m);
-                     });
-                     }
+        try {
+            const marketCount = await getMarketCount(); // Get the market count
+            const newBets = []; // Array to collect new bets
 
-             })        
+            for (let i = 0; i < marketCount; i++) {
+                const marketMetadata = await getMarketMetadata(i); // Fetch market metadata
+                console.log("i", i);
+
+                if (marketMetadata[0].status === 0) {
+                    newBets.push(marketMetadata[0]); // Add valid bets to the array
+                }
+            }
+
+            setBets(newBets); // Update state once all data is collected
+            console.log("Bets:", newBets);
+        } catch (error) {
+            console.error("Error fetching bets:", error);
+        }
     };
 
     fetchBets();
-  }, [account]);
-
+}, [account]);
 
 
 //   useEffect(() => {
@@ -91,7 +94,9 @@ const Marketplace = () => {
 
 
   return (
-    <div style={{ minHeight: "100vh" }} className="font-jbm">
+    <>
+    {!bets && <div>"Loading..."</div>}
+    {bets && <div style={{ minHeight: "100vh" }} className="font-jbm">
       <Grid
         mt={5}
         templateColumns={{
@@ -104,14 +109,15 @@ const Marketplace = () => {
         alignItems={"center"}
         p={6}
       >
-        {bets.map((bet) => (
+        {bets?.map((bet) => (
             <div className="font-jbm">
                 <BetCard key={bet?.id} {...bet} />
             </div>
         
         ))}
       </Grid>
-    </div>
+    </div>}
+    </>
   );
 };
 

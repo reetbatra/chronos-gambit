@@ -87,35 +87,6 @@ function AdminForm({}: Props) {
             console.log("Account not available");
         }
 
-        // await aptos.transaction.build.simple({
-        //     sender: account.address ?? "",
-        //     data: {
-        //       function: `${moduleAddress}::chronos_gambit::buy_shares`,
-        //       typeArguments: [],
-        //       functionArguments: [
-
-        //         new U64(0),
-        //         new U64(0),
-        //         new U64(10),
-        //        ],
-        //     },
-        // });
-
-        
-        // if(account){
-        //         const committedTxn = await signAndSubmitTransaction({  data: {
-        //          function: `${moduleAddress}::chronos_gambit::buy_shares`,
-        //          typeArguments: [],
-        //          functionArguments:[ 0,0,10],
-        //     }, });
-        //         await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
-        //         console.log(`Committed transaction: ${committedTxn.hash}`);
-        // }else{
-        //     console.log("Account not available");
-        // }
-
-    
-    
         
     }
 

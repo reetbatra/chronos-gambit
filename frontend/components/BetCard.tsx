@@ -1,21 +1,31 @@
 import { Avatar, Flex, Stack } from '@chakra-ui/react';
+import {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom'; 
 
 type Props = {
     id: string,
     createdAt: string,
-    imageURL:string;
+    image_url:string;
     question: string;
     option_1: string;
     option_2: string;
 };
 
+
+
 const BetCard = (props: Props) => {
   const navigate = useNavigate(); 
+const [imageURL, setImageURL] = useState<any>("");
 
   const handleCardClick = () => {
     navigate(`/bet/${props.id}`);
   };
+
+  useEffect(() => {
+  setImageURL(hexToAscii(props.image_url));
+  console.log(props);
+}, [props]);
+
 
   const handleBetClick = (value: string) => {
     // handle the click event here
@@ -42,7 +52,7 @@ const BetCard = (props: Props) => {
     >
     //https://bit.ly/dan-abramov
       <Flex height={"80%"}>
-        <Avatar name='Dan Abrahmov' src={props?.imageURL} />
+        <Avatar name='Dan Abrahmov' src={imageURL} />
         <div style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px", fontSize: "17px" }} className='font-jbm'>
           {hexToAscii(props.question)}
         </div>

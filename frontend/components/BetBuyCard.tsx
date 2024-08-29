@@ -1,8 +1,10 @@
-import {Divider, Flex, Progress, Stack, Text} from '@chakra-ui/react';
+import {Divider, Flex, Progress, Skeleton, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
 import {useWallet} from '@aptos-labs/wallet-adapter-react';
+import {  Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
+import {  Network } from "aptos";
 
 
 
@@ -13,8 +15,9 @@ const BetBuyCard = () => {
   const [lmsr, setLmsr] = useState<any>(null);
   const [amount, setAmount] = useState<number>(0); // State for bet amount input
   const [selectedOption, setSelectedOption] = useState<string | null>(null); // State to track selected option
-
+  const [currentPrice, setCurrentPrice] = useState<any>(null);
   const {account} = useWallet();
+  var betPlaced = false;
 
    function hexToAscii(hex:any) {
         let str = '';
@@ -40,11 +43,15 @@ useEffect(() => {
                      });
                      }
 
-             })        
+             })  
+             const{val1, val2} = getCurrentPrice(lmsr?.option_shares_1, lmsr?.option_shares_2, lmsr?.liquidity_param);
+            setCurrentPrice({val1, val2});
+            console.log("currentPrice: ", currentPrice);      
         };
 
+        
         fetchBets();
-  }, [account]);
+  }, [account, betPlaced]);
 
 
 
@@ -70,37 +77,105 @@ useEffect(() => {
     setSelectedOption(option);
   };
 
+  function getCurrentPrice(q1:any, q2:any, b:any){
+        let val_1 = Math.exp(q1/b);
+        let val_2 = Math.exp(q2/b);
+
+        return { val1: val_1 / (val_1 + val_2), val2: val_2 / (val_1 + val_2) } 
+    }
+
+  const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
+    const {  signAndSubmitTransaction } = useWallet();
+
+    const config = new AptosConfig({ network: Network.TESTNET });
+    const aptos = new Aptos(config);
+
+  const buyShares = async(marketId:any, shareOption:any, numberOfShares:any) => {
+    try{
+    if(account){
+                const committedTxn = await signAndSubmitTransaction({  data: {
+                 function: `${moduleAddress}::chronos_gambit::buy_shares`,
+                 typeArguments: [],
+                 functionArguments: [marketId, shareOption, numberOfShares],
+            }, });
+                await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+                console.log(`Committed transaction: ${committedTxn.hash}`);
+        }else{
+            console.log("Account not available");
+        }
+    } catch (e) {
+        console.error(e);
+    }
+  }
+
   const handleBuyClick = () => {
     // Only proceed if amount is a number, greater than 0, and an option is selected
-    if (amount > 0 && selectedOption) {
-      alert(`Placed a bet of $${amount.toFixed(2)} on ${selectedOption}`);
-    } else {
-      alert('Please enter a valid bet amount and select an option.');
-    }
+
+    console.log("Selected Option", selectedOption);
+    let option;
+
+    if(selectedOption === bet?.option_1) option = 0;
+    else option = 1;
+
+    buyShares(parseInt(bet?.id), option, amount).then((sharesBought:any) => {
+        console.log("Shares Bought: ", sharesBought);
+        betPlaced=true;
+    })
+    // if (amount > 0 && selectedOption) {
+    //   alert(`Placed a bet of $${amount.toFixed(2)} on ${selectedOption}`);
+    // } else {
+    //   alert('Please enter a valid bet amount and select an option.');
+    // }
+    
   };
 
   return (
     
     <>
-        {!bet && <div style={{color: "white"}}>Loading...</div>} 
+        {!bet && <Stack minHeight={"100vh"} p={5} width={"100%"} color={"white"} justifyContent={"space-between"}>
+          <Skeleton height='20px' />
+          <Skeleton height='20px' />
+          <Skeleton height='20px' />
+        </Stack>} 
         {bet && <Flex minHeight={"100vh"} p={5} width={"100%"} color={"white"} justifyContent={"space-between"}>
         <Stack width={"60%"}>
             <h2 className="text-xl font-jbm font-bold mb-3" style={{color: "#CCCCFF"}}>{hexToAscii(bet?.question)}</h2>
             <Text fontSize={"lg"} mb={10} className="font-jbm">{hexToAscii(bet?.description)}</Text>
-
-            <Stack>
+            <Flex>
+            <Stack width={"70%"}>
                 <Flex>
                     <Text mr={2}>{hexToAscii(bet?.option_1)}</Text>
-                    <Text> - 100 Shares</Text>
+                    <Text> - {lmsr?.option_shares_1}  Shares</Text>
                 </Flex>
                     <Progress width={"50%"} colorScheme='green' size='sm' value={lmsr?.option_shares_1} />
                 <Flex width={"100%"}>
                     <Text mr={2}>{hexToAscii(bet?.option_2)}  {" "}</Text>
-                    <Text> - 50 Shares</Text>
+                    <Text> - {lmsr?.option_shares_2} Shares</Text>
                 </Flex>
                  <Progress width={"50%"} colorScheme='red' size='sm' value={lmsr?.option_shares_2} />
 
             </Stack>
+
+            <StatGroup >
+              <Stat mr={20}>
+                <StatLabel fontSize={"lg"}>{hexToAscii(bet?.option_1)}</StatLabel>
+                <StatNumber>{"$"}{currentPrice?.val1.toFixed(2)}</StatNumber>
+                <StatHelpText>
+                  <StatArrow type='increase' />
+                </StatHelpText>
+              </Stat>
+
+              <Stat>
+                <StatLabel fontSize={"lg"}>{hexToAscii(bet?.option_2)}</StatLabel>
+                <StatNumber>{"$"}{currentPrice?.val2.toFixed(2)}</StatNumber>
+                <StatHelpText>
+                  <StatArrow type='decrease' />
+                </StatHelpText>
+              </Stat>
+            </StatGroup>
+            </Flex>
+
+            
 
             <Divider my={10}></Divider>
 
