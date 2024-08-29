@@ -1,14 +1,10 @@
-import {Aptos, AptosConfig} from "@aptos-labs/ts-sdk";
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import {Grid} from "@chakra-ui/react";
-import {Network} from "aptos";
 import {useEffect, useState} from "react";
 import {getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
 import BetCard from "./BetCard";
 
 
- const config = new AptosConfig({ network: Network.TESTNET });
- const aptos = new Aptos(config);
 
 
 const Marketplace = () => {
@@ -25,13 +21,14 @@ useEffect(() => {
 
         try {
             const marketCount = await getMarketCount(); // Get the market count
-            const newBets = []; // Array to collect new bets
+            const newBets:any[] = []; // Array to collect new bets
 
             for (let i = 0; i < marketCount; i++) {
-                const marketMetadata = await getMarketMetadata(i); // Fetch market metadata
+                const marketMetadata:any = await getMarketMetadata(i); // Fetch market metadata
                 console.log("i", i);
 
-                if (marketMetadata[0].status === 0) {
+
+                if (marketMetadata.length>0 && marketMetadata?.[0]?.status === 0) {
                     newBets.push(marketMetadata[0]); // Add valid bets to the array
                 }
             }

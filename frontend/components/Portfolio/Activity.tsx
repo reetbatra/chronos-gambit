@@ -47,7 +47,7 @@ function Activity({}: Props) {
             const userData = await getUserMarketData(account?.address);
             console.log("User Data:", userData[0].length);
 
-            const updatedUserMarketData = [];
+            const updatedUserMarketData:any[] = [];
 
             for (let i = 0; i < userData[0].length; i++) {
                 console.log(i)

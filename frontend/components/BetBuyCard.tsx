@@ -9,6 +9,7 @@ import {  Network } from "aptos";
 
 
 
+
 const BetBuyCard = () => {
   const { id } = useParams<{ id: string }>(); // Get the bet ID from the URL
   const [bet, setBet] = useState<any>(null); // State to hold the bet data
