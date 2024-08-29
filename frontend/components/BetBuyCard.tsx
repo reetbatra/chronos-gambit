@@ -195,19 +195,12 @@ useEffect(() => {
                 The Logarithmic Market Scoring Rule (LMSR) is a mathematical tool used to evaluate the accuracy of predictions. 
                 It’s designed to encourage honesty and precision when making predictions about uncertain events.
 
-                {/* <h2 style={{color: "#CCCCFF"}} className="text-md font-jbm font-bold mt-10 mb-3">Why Use LSR?</h2>
-                The Logarithmic Scoring Rule is widely used in various fields, including economics, 
-                machine learning, and prediction markets, because it provides a robust way to evaluate predictions.
-                It’s particularly valuable for situations where honesty and accuracy are critical. */}
-{/* 
-                <h2 style={{color: "#CCCCFF"}} className="text-md font-jbm font-bold mt-5">
-                Explore our platform and see how the Logarithmic Scoring Rule can help you sharpen your predictive skills!
-                </h2> */}
+            
 
             </Text>
 
         </Stack>
-        <Stack width={"20%"} mx={20}>
+        <Stack width={"30%"} ml={20}>
             <div style={{ color: 'white', backgroundColor: '#18191C' }} className="font-jbm p-4 rounded-lg border-2 border-[#CCCCFF] shadow-md w-full max-w-sm mx-auto">
               <div className="text-center mb-4">
                 <h2 className="text-lg font-bold">Buy Bet</h2>
@@ -295,6 +288,9 @@ useEffect(() => {
             >
               BUY
             </button>
+            <div className="flex flex-col m-1 text-gray-500 text-sm justify-between font-jbm">
+                <p className='font-jbm'>⚠️ Due to slippage tolerance, price may vary.</p>
+              </div>
           </div>
         </>
       )}

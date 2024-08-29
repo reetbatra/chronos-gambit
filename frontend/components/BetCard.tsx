@@ -97,9 +97,7 @@ const [imageURL, setImageURL] = useState<any>("");
       </div>
 
       {/* Card Footer */}
-      <div className="flex flex-col m-1 text-gray-500 text-sm justify-between font-jbm">
-        <p className='font-jbm'>⚠️ Due to slippage tolerance, price may vary.</p>
-      </div>
+      
     </Stack>
   );
 };
