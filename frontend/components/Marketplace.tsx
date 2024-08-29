@@ -24,11 +24,13 @@ useEffect(() => {
             const newBets:any[] = []; // Array to collect new bets
 
             for (let i = 0; i < marketCount; i++) {
+                
                 const marketMetadata:any = await getMarketMetadata(i); // Fetch market metadata
                 console.log("i", i);
 
 
                 if (marketMetadata.length>0 && marketMetadata?.[0]?.status === 0) {
+                    if(i!=8)
                     newBets.push(marketMetadata[0]); // Add valid bets to the array
                 }
             }

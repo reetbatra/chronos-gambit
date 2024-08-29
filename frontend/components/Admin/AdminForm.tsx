@@ -26,7 +26,7 @@ function AdminForm({}: Props) {
         description:"",
         firstShareOption:"",
         secondShareOption:"",
-        liquidityParameter:0
+        liquidityParameter:100
 	})
 
 
@@ -184,7 +184,7 @@ function AdminForm({}: Props) {
 
     
 
-        <label htmlFor="liquidityParameter">Liquidity Parameter</label>
+        {/* <label htmlFor="liquidityParameter">Liquidity Parameter</label>
 		<Input
 			type="number"
 			marginBottom="20px"
@@ -193,7 +193,7 @@ function AdminForm({}: Props) {
 			name="liquidityParameter"
 			value={formData.liquidityParameter}
 			onChange={handleInputChange}
-		/>
+		/> */}
 		    <Button type="submit" colorScheme='green'>Submit</Button>
 
 			

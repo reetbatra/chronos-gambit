@@ -94,7 +94,7 @@ function ConnectWalletDialog({ close }: ConnectWalletDialogProps) {
     <DialogContent className="max-h-screen overflow-auto">
       <AboutAptosConnect renderEducationScreen={renderEducationScreen}>
         <DialogHeader>
-          <DialogTitle className="flex flex-col text-center leading-snug">
+          <DialogTitle style={{zIndex:1}} className="flex flex-col text-center leading-snug">
             {hasAptosConnectWallets ? (
               <>
                 <span>Log in or sign up</span>
