@@ -1,17 +1,57 @@
 import {useWallet} from "@aptos-labs/wallet-adapter-react";
 import { WalletSelector } from "./WalletSelector";
 import { Link } from 'react-router-dom';
+import {Button, useToast} from "@chakra-ui/react";
 // import {aptos} from '../utils/aptosClient';
 // import {useEffect} from "react";
+import {  Network } from "aptos";
+import { Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 
 export function Header() {
 
-  const { account} = useWallet();
+    const { account, signAndSubmitTransaction } = useWallet();
 
-// useEffect(() => {
-//   const fund = aptos.getAccountInfo({ accountAddress: "0xbe78c3db211c44ff8ab479269bca429472b026751f983abfbb5b716ae12874cc"});
-//   fund.then((result) => console.log("fund", result));
-// }, []);
+    const config = new AptosConfig({ network: Network.TESTNET });
+    const aptos = new Aptos(config);
+
+   const toast = useToast()
+
+
+        const handleClick = async (e:any) => {
+        e.preventDefault();
+
+         if (!account) {
+            console.error("Account not available");
+            return;
+        }
+
+        const moduleAddress = "0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1"
+
+        if(account){
+                const committedTxn = await signAndSubmitTransaction({  data: {
+                 function: `${moduleAddress}::usdc::mint`,
+                 typeArguments: [],
+                 functionArguments: [account?.address, 10**10]
+            }, });
+                await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
+                console.log(`Committed transaction: ${committedTxn.hash}`);
+                // window.alert("Minted USDC successfully!");
+                  toast({
+          title: 'USDC Minted',
+          description: "We've added USDC to your account",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        })
+        }else{
+            console.log("Account not available");
+        }
+
+        
+    }
+
+
+
 
   return (
     <div style={{ backgroundColor:"#111214", display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px', color:"white", borderBottom: '1px solid gray'}}>
@@ -23,7 +63,9 @@ export function Header() {
         <Link to="/marketplace" className="font-jbm text-l" style={{marginRight:"40px", zIndex:1}}>Marketplace</Link>
         <Link to={`/portfolio/${account?.address}`}  style={{marginRight:"40px", zIndex:1}} className="font-jbm text-l">Portfolio</Link>
         <Link to="/faq" className="font-jbm text-l" style={{marginRight:"40px", zIndex:1}}>FAQ's</Link>
-        <Link to="/admin" className="font-jbm text-l" style={{zIndex:1}}>Create Market</Link>
+        <Link to="/admin" className="font-jbm text-l" style={{marginRight:"40px", zIndex:1}}>Create Market</Link>
+                <Button onClick={handleClick} style={{zIndex:1, borderRadius:"20px", "height":"30px"}}>Mint USDC</Button>
+
 
       </div>
       <div className="ml-auto">

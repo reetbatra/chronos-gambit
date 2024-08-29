@@ -9,7 +9,7 @@ import {  Network } from "aptos";
 export const config = new AptosConfig({ network:"testnet" });
 export const aptos = new Aptos(config);
 
-const moduleAddress  = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
+const moduleAddress  = "0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1";
 export async function initMarket(adminAccount, question, option1, option2, sharesPerOption) {
   const adminAddress = adminAccount;
   const payload = {

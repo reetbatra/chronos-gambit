@@ -1,5 +1,5 @@
-import {Center, Stack, Tab, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react'
-import Summary from './Portfolio/Summary'
+import {Center, Stack, TabList, TabPanel, TabPanels, Tabs} from '@chakra-ui/react'
+// import Summary from './Portfolio/Summary'
 import Activity from './Portfolio/Activity'
 
 type Props = {}
@@ -12,8 +12,8 @@ function Portfolio({}: Props) {
 
                 <Tabs variant='unstyled'>
                   <TabList>
-                    <Tab _selected={{ color: 'black', bg: 'white' }} style={{ fontFamily: "'JetBrains Mono'" }} className='rounded-md'>Activity</Tab>
-                    <Tab  _selected={{ color: 'black', bg: 'white' }} style={{ fontFamily: "'JetBrains Mono'" }} className='rounded-md'>Summary</Tab>
+                    {/* <Tab _selected={{ color: 'black', bg: 'white' }} style={{ fontFamily: "'JetBrains Mono'" }} className='rounded-md'>Activity</Tab> */}
+                    {/* <Tab  _selected={{ color: 'black', bg: 'white' }} style={{ fontFamily: "'JetBrains Mono'" }} className='rounded-md'>Summary</Tab> */}
                   </TabList>
                   <TabPanels>
                     <TabPanel>
@@ -21,9 +21,9 @@ function Portfolio({}: Props) {
                       <Activity/>
                     </Center>  
                     </TabPanel>
-                    <TabPanel>
+                    {/* <TabPanel>
                       <Summary/>
-                    </TabPanel>
+                    </TabPanel> */}
                   </TabPanels>
                 </Tabs>
     </Stack>   

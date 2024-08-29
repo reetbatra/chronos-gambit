@@ -1,4 +1,4 @@
-import {Divider, Flex, Progress, Skeleton, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text} from '@chakra-ui/react';
+import {Divider, Flex, Progress, Skeleton, Stack, Stat, StatArrow, StatGroup, StatHelpText, StatLabel, StatNumber, Text, useToast} from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMarketCount, getMarketMetadata} from "../../blockend/aptosService";
@@ -78,6 +78,9 @@ useEffect(() => {
     setSelectedOption(option);
   };
 
+  const toast = useToast()
+
+
   function getCurrentPrice(q1:any, q2:any, b:any){
         let val_1 = Math.exp(q1/b);
         let val_2 = Math.exp(q2/b);
@@ -85,7 +88,7 @@ useEffect(() => {
         return { val1: val_1 / (val_1 + val_2), val2: val_2 / (val_1 + val_2) } 
     }
 
-  const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
+  const moduleAddress = "0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1";
     const {  signAndSubmitTransaction } = useWallet();
 
     const config = new AptosConfig({ network: Network.TESTNET });
@@ -101,6 +104,13 @@ useEffect(() => {
             }, });
                 await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
                 console.log(`Committed transaction: ${committedTxn.hash}`);
+                  toast({
+          title: 'Bet Placed',
+          description: "We've added your bet to the market.",
+          status: 'success',
+          duration: 9000,
+          isClosable: true,
+        })
         }else{
             console.log("Account not available");
         }

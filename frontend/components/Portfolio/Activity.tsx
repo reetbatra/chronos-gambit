@@ -36,7 +36,7 @@ function Activity({}: Props) {
 
     const config = new AptosConfig({ network: Network.TESTNET });
     const aptos = new Aptos(config);
-    const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
+    const moduleAddress = "0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1";
 
 
      useEffect(() => {
@@ -103,7 +103,7 @@ function Activity({}: Props) {
             {userMarketData?.map((data:any) => (
               <Tr color={"#CCCCFF"}key={data.betData?.id}>
                 <Td className='font-jbm'>{hexToAscii(data?.betData?.question)}</Td> 
-                <Td className='font-jbm'>{"$"}{data?.userData?.amount_invested/10**6}</Td> 
+                <Td className='font-jbm'>{"$"}{data?.userData?.amount_invested/10**8}</Td> 
                 <Td className='font-jbm'>{hexToAscii(data?.betData?.option_1)} - {data?.userData?.option_shares_1}</Td> 
                 <Td className='font-jbm'>{hexToAscii(data?.betData?.option_2)} - {data?.userData?.option_shares_2}</Td> 
                 <Td className='font-jbm'><Button onClick={()=>handlePayout(data?.betData)} bg={"#CCCCFF"} className=" text-black p-3 rounded-md">Withdraw</Button></Td>              </Tr>

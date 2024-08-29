@@ -1,4 +1,4 @@
-import {Button, Center, Input} from '@chakra-ui/react'
+import {Button, Center, Input, useToast} from '@chakra-ui/react'
 import React, {useState} from 'react'
 // @ts-ignore
 import { initMarket , getMarketCount, getMarketMetadata} from "../../../blockend/aptosService"; 
@@ -40,7 +40,9 @@ function AdminForm({}: Props) {
         console.log("acc: " , acc);
 	}
 
-    const moduleAddress = "0x8d5e69b7d4c7203af95e5a13a4d734792930e76f578dcaa5ffa73cbb393e7a3e";
+    const moduleAddress = "0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1";
+
+    const toast = useToast()
 
 
 
@@ -82,6 +84,13 @@ function AdminForm({}: Props) {
             }, });
                 await aptos.waitForTransaction({ transactionHash: committedTxn.hash });
                 console.log(`Committed transaction: ${committedTxn.hash}`);
+                  toast({
+                      title: 'Market Created',
+                      description: "We've created market successfully!",
+                      status: 'success',
+                      duration: 9000,
+                      isClosable: true,
+                    })
         }else{
             console.log("Account not available");
         }
