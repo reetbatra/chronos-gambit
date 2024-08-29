@@ -1,6 +1,7 @@
 import {Box, Center, Heading, Stack} from "@chakra-ui/react"
 import {useEffect} from "react";
 import {BackgroundBeams} from "./ui/background-beams";
+import {Link} from "react-router-dom";
 function Homepage() {
 
     useEffect(() => {
@@ -35,12 +36,12 @@ function Homepage() {
     Secure, Transparent, and Low-Fee Prediction Market on Aptos – Where Collective Intelligence Meets Rewards
     </Box>
 
-    <button
+    <Link to="/marketplace"><button
   className="mt-4 py-2 px-4 rounded-md transition duration-300 font-jbm text-lg w-48 bg-white text-black border border-black hover:bg-[#5252FF] hover:text-white"
-  onClick={() => window.location.href = '/marketplace'}
 >
   Get Started
 </button>
+</Link>
 
 
   </Stack>
