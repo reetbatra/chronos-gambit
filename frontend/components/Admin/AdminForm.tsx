@@ -4,7 +4,7 @@ import React, {useState} from 'react'
 import { initMarket , getMarketCount, getMarketMetadata} from "../../../blockend/aptosService"; 
 
 import {  Network } from "aptos";
-import { Account, Aptos, AptosConfig, U64} from "@aptos-labs/ts-sdk";
+import { Account, Aptos, AptosConfig } from "@aptos-labs/ts-sdk";
 import {
   useWallet,
 } from "@aptos-labs/wallet-adapter-react";
