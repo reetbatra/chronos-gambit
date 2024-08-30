@@ -57,4 +57,5 @@ aptos move publish
 
 ## Our deployments
 Testnet: [0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1](https://explorer.aptoslabs.com/account/0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1?network=testnet)
+
 Front-end: [https://chronos-gambit.vercel.app/](https://chronos-gambit.vercel.app/)
