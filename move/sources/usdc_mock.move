@@ -27,7 +27,7 @@ module message_board_addr::usdc{
   }
 
   // Init Fn
-  entry fun init_module(admin: &signer) {
+  fun init_module(admin: &signer) {
     // Creates a non-deletable object with a named address based on our ASSET_SYMBOL
     let constructor_ref = &object::create_named_object(admin, ASSET_SYMBOL);
     // Create the FA's Metadata with your name, symbol, icon, etc.

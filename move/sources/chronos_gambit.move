@@ -34,9 +34,7 @@ module message_board_addr::chronos_gambit{
   const EADUPLICATE_REQUEST: u64 = 7;
   const ENO_WINNING_SHARES: u64 = 8;
   const EINVALID_NO_SHARES: u64 = 9;
-
-  // Share Decimals
-  const SHARE_DECIMALs: u8 = 4;
+  const EINVALID_LIQUIDITY_PARAM: u64 = 9;
 
   // Structs
   #[resource_group_member(group = aptos_framework::object::ObjectGroup)]
@@ -216,7 +214,7 @@ module message_board_addr::chronos_gambit{
     // Find the payout per share
     let vault_balance = usdc::get_balance(get_market_address(market_id));
     let no_of_shares = if (result == 0) lsmr.option_shares_1 else lsmr.option_shares_2;
-    let payout_per_share = vault_balance/no_of_shares;
+    let payout_per_share = if (no_of_shares == 0) 0 else vault_balance/no_of_shares;
 
     // update the result
     prediction_market_metadata.status = FINISHED;
@@ -280,6 +278,9 @@ module message_board_addr::chronos_gambit{
     // let admin_address = signer::address_of(admin);
     // assert!(admin_address == @message_board_addr, ENOT_ADMIN);
     let signer_address = signer::address_of(signer);
+
+    // liquidity param cannot be 0
+    assert!(liquidity_param != 0, EINVALID_LIQUIDITY_PARAM);
 
     // Get the market counter
     let counter = &mut borrow_global_mut<MarketCounter>(@message_board_addr).value;
@@ -399,7 +400,7 @@ module message_board_addr::chronos_gambit{
     };
 
     let user_data = borrow_global_mut<UserData>(signer_address);
-    let amount_invested = round_to_6_decimals(net_diff);
+    let amount_invested = round_to_8_decimals(net_diff);
 
     if (table::contains(&user_data.market_to_data, market_id)) {
       let user_market_data = table::borrow_mut(&mut user_data.market_to_data, market_id);
@@ -438,9 +439,9 @@ module message_board_addr::chronos_gambit{
     result
   }
 
-  fun round_to_6_decimals(x: FixedPoint64): u64{
-    let six_decimals = 1000000;
-    let scaled_part = (get_raw_value(x) * six_decimals) >> 64;
+  fun round_to_8_decimals(x: FixedPoint64): u64{
+    let eight_decimals = 100000000;
+    let scaled_part = (get_raw_value(x) * eight_decimals) >> 64;
     (scaled_part as u64)
   }
 
@@ -592,7 +593,7 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 203);
 
     let net_diff = sub(pricing_function(5, 0, 250), pricing_function(0, 0, 250));
-    let amount_invested_1 = round_to_6_decimals(net_diff);
+    let amount_invested_1 = round_to_8_decimals(net_diff);
 
     // check buying shares
     buy_shares(user_1, market_id, option_1, shares_1);
@@ -637,7 +638,7 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 214);
 
     let net_diff = sub(pricing_function(5, 10, 250), pricing_function(5, 0, 250));
-    let amount_invested_2 = round_to_6_decimals(net_diff);
+    let amount_invested_2 = round_to_8_decimals(net_diff);
 
     // check buying shares
     buy_shares(user_2, market_id, option_2, shares_2);
@@ -673,7 +674,7 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 226);
 
     let net_diff = sub(pricing_function(31, 10, 250), pricing_function(5, 10, 250));
-    let amount_invested_3 = round_to_6_decimals(net_diff);
+    let amount_invested_3 = round_to_8_decimals(net_diff);
 
     // check buying shares
     buy_shares(user_2, market_id, option_3, shares_3);
@@ -711,7 +712,7 @@ module message_board_addr::chronos_gambit{
     assert!(lmsr.liquidity_param == liquidity_param_1, 239);
 
     let net_diff = sub(pricing_function(31, 47, 250), pricing_function(31, 10, 250));
-    let amount_invested_4 = round_to_6_decimals(net_diff);
+    let amount_invested_4 = round_to_8_decimals(net_diff);
 
     // check buying shares
     buy_shares(user_1, market_id, option_4, shares_4);
