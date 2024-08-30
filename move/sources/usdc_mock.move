@@ -4,6 +4,7 @@ module message_board_addr::usdc{
   use aptos_framework::primary_fungible_store;
   #[test_only]
   use aptos_std::math64;
+  #[test_only]
   use std::signer;
   use std::string::utf8;
   use std::option;
@@ -26,7 +27,7 @@ module message_board_addr::usdc{
   }
 
   // Init Fn
-  entry fun init_module(admin: &signer) {
+  fun init_module(admin: &signer) {
     // Creates a non-deletable object with a named address based on our ASSET_SYMBOL
     let constructor_ref = &object::create_named_object(admin, ASSET_SYMBOL);
     // Create the FA's Metadata with your name, symbol, icon, etc.
@@ -97,7 +98,7 @@ module message_board_addr::usdc{
   }
 
   // Public Fns
-  public entry fun mint(admin: &signer, to: address, amount: u64) acquires ObjectController {
+  public entry fun mint(_admin: &signer, to: address, amount: u64) acquires ObjectController {
     // -> Admin auth removed for demo
     // let admin_address = signer::address_of(admin);
     // assert!(admin_address == @message_board_addr, ENOT_ADMIN);
