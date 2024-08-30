@@ -1,34 +1,61 @@
-## Create Aptos Dapp Boilerplate Template
+# Chrono's Gambit
+Chrono's Gambit is a cutting-edge decentralized prediction market platform built on the Aptos blockchain. Our mission is to provide a secure, transparent, and low-cost environment for users to create, participate in, and resolve prediction markets on a variety of topics, including politics, climate change, and sports.
 
-The Boilerplate template provides a starter dapp with all necessary dapp infrastructure and a simple wallet info implementation.
+## Team
+- Smart Contracts: [Vishnu Prakash](https://github.com/merkle-groot)
+- Full Stack & Integration: [Sharayu Shendre](https://github.com/quaintrelle7)
+- Front End: [Reet Batra](https://github.com/reetbatra)
+- Design: [Shantanu Shendre](https://github.com/Shan-7)
 
+## Features
+- Decentralized Market Creation: Easily create and participate in prediction markets without intermediaries.
+- Low Transaction Fees: Enjoy minimal fees thanks to the efficiency of the Aptos blockchain.
+- Automated Outcomes: Smart contracts handle the resolution of markets using reliable oracles.
+- User-Friendly Interface: Designed for ease of use with an intuitive interface.
+- Multi-Category Predictions: Engage in predictions across diverse categories.
 
-## The Boilerplate template provides:
+## Tools & Technologies
+- React: For building the user interface.
+- Vite: A modern development tool for fast builds.
+- shadcn/ui & Tailwind CSS: For stylish and responsive design.
+- Aptos TS SDK: For interacting with the Aptos blockchain.
+- Aptos Wallet Adapter: To handle wallet connections.
+- Node-based Move Commands: For smart contract development and management.
 
-- **Folder structure** - A pre-made dapp folder structure with a `frontend` and `move` folders.
-- **Dapp infrastructure** - All required dependencies a dapp needs to start building on the Aptos network.
-- **Wallet Info implementation** - Pre-made `WalletInfo` components to demonstrate how one can use to read a connected Wallet info.
+## Getting Started
+1. Clone the Repository
+- `git clone https://github.com/your-repo/chronos-gambit.git`
+- `cd chronos-gambit`
 
-### What tools the template uses?
+2. Install Dependencies
 
-- React framework
-- Vite development tool
-- shadcn/ui + tailwind for styling
-- Aptos TS SDK
-- Aptos Wallet Adapter
-- Node based Move commands
+- `npm install`
 
-### What Move commands are available?
+3. Start the Development Server
+- `npm run dev`
+4. Deploy the Application
 
-The tool utilizes [aptos-cli npm package](https://github.com/aptos-labs/aptos-cli) that lets us run Aptos CLI in a Node environment.
+- `npm run deploy`
 
-Some commands are built-in the template and can be ran as a npm script, for example:
+## Move Commands
+1. Change directory to /move
+```
+cd move
+```
+2. Compile the code
+```
+aptos move compile
+```
+3. Run the tests
+```
+aptos move test
+```
+4. Publish it on tesnet
+```
+aptos move publish
+```
 
-- `npm run move:init` - a command to initialize an account to publish the Move contract and to configure the development environment
-- `npm run move:publish` - a command to publish the Move contract
-- `npm run move:test` - a command to run Move unit tests
-- `npm run move:compile` - a command to compile the Move contract
-- `npm run deploy` - a command to deploy the dapp to Vercel
+## Our deployments
+Testnet: [0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1](https://explorer.aptoslabs.com/account/0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1?network=testnet)
 
-For all other available CLI commands, can run `npx aptos` and see a list of all available commands.
-# chronos-gambit
+Front-end: [https://chronos-gambit.vercel.app/](https://chronos-gambit.vercel.app/)
