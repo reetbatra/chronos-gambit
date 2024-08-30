@@ -1,6 +1,12 @@
 # Chrono's Gambit
 Chrono's Gambit is a cutting-edge decentralized prediction market platform built on the Aptos blockchain. Our mission is to provide a secure, transparent, and low-cost environment for users to create, participate in, and resolve prediction markets on a variety of topics, including politics, climate change, and sports.
 
+## Team
+- Smart Contracts: [Vishnu Prakash](https://github.com/merkle-groot)
+- Full Stack & Integration: [Sharayu Shendre](https://github.com/quaintrelle7)
+- Front End: [Reet Batra](https://github.com/reetbatra)
+- Design: [Shantanu Shendre](https://github.com/Shan-7)
+
 ## Features
 - Decentralized Market Creation: Easily create and participate in prediction markets without intermediaries.
 - Low Transaction Fees: Enjoy minimal fees thanks to the efficiency of the Aptos blockchain.
@@ -31,29 +37,24 @@ Chrono's Gambit is a cutting-edge decentralized prediction market platform built
 
 - `npm run deploy`
 
-## Note some important MOVE commands
+## Move Commands
+1. Change directory to /move
+```
+cd move
+```
+2. Compile the code
+```
+aptos move compile
+```
+3. Run the tests
+```
+aptos move test
+```
+4. Publish it on tesnet
+```
+aptos move publish
+```
 
-- `npm run move:init` - a command to initialize an account to publish the Move contract and to configure the development environment
-- `npm run move:publish` - a command to publish the Move contract
-- `npm run move:test` - a command to run Move unit tests
-- `npm run move:compile` - a command to compile the Move contract
-
-For all other available CLI commands, can run `npx aptos` and see a list of all available commands.
-
-
-<!-- //Do you want to publish this package at object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957 [yes/no] 
-
-
-Transaction submitted: https://explorer.aptoslabs.com/txn/0xaa0dbbf98c40f23873b5780e238ac5cd1ab8e810adaf74574a97c37844689aae?network=devnet
-Code was successfully deployed to object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957.
-
-
-Object Code=0x49da297f6e05d90ebd319e05d6a396acbb64e641f15b1741a4d2dc44b029f29b -->
-
-
-Transaction submitted: https://explorer.aptoslabs.com/txn/0xd27b35e39ac6df8e261fbff4dcd4947edfe3e18b09add336a0b7ad1ecbeb317e?network=testnet
-Code was successfully deployed to object address 0xeebb9fc6364e1a7e66098f65a5160e73c442bb2b9c0b428506e4714290b30957.
-
-
-Transaction submitted: https://explorer.aptoslabs.com/txn/0x2176e951b12a99de5da63d0a152cbcaadfd869af1687fcf0065dedf897fafe91?network=testnet
-Code was successfully deployed to object address0x49da297f6e05d90ebd319e05d6a396acbb64e641f15b1741a4d2dc44b029f29b
+## Our deployments
+Testnet: [0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1](https://explorer.aptoslabs.com/account/0xdb25608306e8286889aec5ba6a2bb0b0bd0f4d5d3d589f6e51c48ee3f3be8cc1?network=testnet)
+Front-end: [https://chronos-gambit.vercel.app/](https://chronos-gambit.vercel.app/)
