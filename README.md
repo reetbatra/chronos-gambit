@@ -1,12 +1,6 @@
 # Chrono's Gambit
 Chrono's Gambit is a cutting-edge decentralized prediction market platform built on the Aptos blockchain. Our mission is to provide a secure, transparent, and low-cost environment for users to create, participate in, and resolve prediction markets on a variety of topics, including politics, climate change, and sports.
 
-## Team
-- Smart Contracts: [Vishnu Prakash](https://github.com/merkle-groot)
-- Full Stack & Integration: [Sharayu Shendre](https://github.com/quaintrelle7)
-- Front End: [Reet Batra](https://github.com/reetbatra)
-- Design: [Shantanu Shendre](https://github.com/Shan-7)
-
 ## Features
 - Decentralized Market Creation: Easily create and participate in prediction markets without intermediaries.
 - Low Transaction Fees: Enjoy minimal fees thanks to the efficiency of the Aptos blockchain.
